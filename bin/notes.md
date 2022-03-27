@@ -8,7 +8,7 @@ REST = architecture
 
 ## TODO   
 - [x] : test GET request  
-- [] : testing POST request 
+- [x] : testing POST request 
 - [] : Link it to the server IP 
 - [] : Handle errors for the API (404, 400, 500)
 > should be easy with : 
@@ -16,5 +16,5 @@ REST = architecture
     abort (404, "url does not exist") -->
 - [] : Securing the API  
 - [] : link it to the server DNS  
-- [] : adding other service than /transcript if needed   
+- [x] : adding other service than /transcript if needed   
 
