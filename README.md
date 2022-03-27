@@ -19,13 +19,14 @@ pip install -r requirements.txt
 
 ## 📚 Source 
 
-[tutorial]("https://www.youtube.com/watch?v=GMppyAPbLYk&ab_channel=TechWithTim")
+[tutorial](https://www.youtube.com/watch?v=GMppyAPbLYk&ab_channel=TechWithTim)
 
 
 ## 👤 About  
 
 
-author : [vincent]("https://www.github.com/Vincent-vst")
-release date : *not released yet* 
-version : 1
+author : [vincent](https://www.github.com/Vincent-vst)   
+release date : *not released yet*    
+version : 1   
+
 
