@@ -1,0 +1,6 @@
+start the server : 
+python3 src/api.py 
+
+on a terminal : 
+python3 client.py #for the transcript in post 
+curl http://127.0.0.1:5000/documentation #for a documentation in get

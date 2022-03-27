@@ -1,6 +1,7 @@
 # Apipy 🐝
 
 Apipy is a REST API in python.
+It's more of a "proof of concept" than an actual project
 
 ## 🔧  Installation  
 
