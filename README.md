@@ -10,7 +10,7 @@ cd Apipy
 pip install -r requirements.txt
 ```
 
-*on your server :*
+*on your server :*    
 `python3 src/api.py` 
 
 *on your client :*  
