@@ -1,21 +1,22 @@
 # Davinci 🐝
 
-Davinci is a REST API in python.
-This branch is the fastAPI testing
+Davinci is a REST API in python.   
+This branch is the fastAPI testing  
 
 ## 🔧  Installation  
 
 ```sh 
 git clone ... 
-cd Apipy
+cd Davinci
 pip install -r requirements.txt
 ```
 
 *on your server :*    
-`python -m uvicorn main:app --reload` 
+`cd src`  
+`python -m uvicorn main:app --reload`  
 
-*on your client :*  
-`127.0.0.1:8000`  
+*on your client :*   
+`127.0.0.1:8000`   
 
 
 ## 📚 Source 
