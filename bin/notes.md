@@ -16,5 +16,19 @@ REST = architecture
     abort (404, "url does not exist") -->
 - [] : Securing the API  
 - [] : link it to the server DNS  
-- [x] : adding other service than /transcript if needed   
+- [x] : adding other service than /transcript if needed    
+
+
+
+## Diagram  
+
+```mermaid
+graph LR;
+    C[["client"]]--->|API|S("Serveur");
+    S-->T("TRAP")
+    S<-->D[("Database")]
+    D-->C 
+```
+
+
 
