@@ -1,7 +1,7 @@
-# Apipy 🐝
+# Davinci 🐝
 
-Apipy is a REST API in python.
-It's more of a "proof of concept" than an actual project
+Davinci is a REST API in python.
+This branch is the fastAPI testing
 
 ## 🔧  Installation  
 
@@ -12,15 +12,16 @@ pip install -r requirements.txt
 ```
 
 *on your server :*    
-`python3 src/api.py` 
+`python -m uvicorn main:app --reload` 
 
 *on your client :*  
-`python3 src/client.py`  
+`127.0.0.1:8000`  
 
 
 ## 📚 Source 
 
-[tutorial](https://www.youtube.com/watch?v=GMppyAPbLYk&ab_channel=TechWithTim)
+[Flask](https://www.youtube.com/watch?v=GMppyAPbLYk&ab_channel=TechWithTim)
+[fastAPI](https://fastapi.tiangolo.com/fr/tutorial/first-steps/)
 
 
 ## 👤 About  
