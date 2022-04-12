@@ -17,15 +17,15 @@ pip install -r requirements.txt
 `python3 main.py` 
 
 *on your client :*   
-`https://[your_ip]:5000` 
+`https://[your_ip]:5000`   
 *or*   
 `python3 src/client.py`  
 
 
 ## 📚 Source 
 
-[tutorial](https://www.youtube.com/watch?v=GMppyAPbLYk&ab_channel=TechWithTim)
-
+[tutorial flask](https://www.youtube.com/watch?v=GMppyAPbLYk&ab_channel=TechWithTim)   
+[tutorial gunicorn](https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-20-04-fr)   
 
 
 ## 👤 About  
