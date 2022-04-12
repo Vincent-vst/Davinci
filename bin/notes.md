@@ -6,6 +6,11 @@ rest -> Representational State Transfer
 REST = architecture 
 3 types of request -> Get (to retrieve info), Post (to add stuff), Delete (to delete)
 
+## Preparation 
+- install python3.10 
+- install postgres 
+
+
 ## TODO   
 - [x] : test GET request  
 - [x] : testing POST request 
@@ -15,6 +20,6 @@ REST = architecture
 <!-- except : 
     abort (404, "url does not exist") -->
 - [] : Securing the API  
-- [] : link it to the server DNS  
+- [] : link it to DNS  
 - [x] : adding other service than /transcript if needed   
 
