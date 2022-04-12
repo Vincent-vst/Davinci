@@ -1,6 +1,7 @@
 
 from flask_restful import Resource
+from flask import render_template 
 
 class Documentation(Resource) : 
     def get(self) : 
-        return "<h3>API Documentation</h3>" +  "<a href='https://github.com/Vincent-vst/Davinci/tree/venv'>Read the doc</a> " 
+        return render_template('index.html')
