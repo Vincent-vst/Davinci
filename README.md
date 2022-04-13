@@ -15,6 +15,8 @@ pip install -r requirements.txt
 
 *on your server :*    
 `python3 main.py` 
+*or*   
+`chmod +x install.sh; ./install.sh`  
 
 *on your client :*   
 `https://[your_ip]:5000`   
@@ -26,6 +28,30 @@ pip install -r requirements.txt
 
 [tutorial flask](https://www.youtube.com/watch?v=GMppyAPbLYk&ab_channel=TechWithTim)   
 [tutorial gunicorn](https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-20-04-fr)   
+
+
+
+## Roadmap  
+
+<details open>
+	<summary>TODO</summary>
+	<br>
+	- [ ] : Link to DNS 
+	- [ ] : Handle errors 
+	- [ ] : Securing the API 
+	- [ ] : Adding more route ? 
+	- [ ] : Link API to trap  
+</details>
+
+## Diagram    
+
+```mermaid
+
+flowchart LR 
+	W("windows") ---> S[["simdoc"]]  
+	W <-.-> D[("database")] 
+	S <--> D 
+``` 
 
 
 ## 👤 About  
