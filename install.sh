@@ -5,8 +5,14 @@ green=`tput setaf 2`
 reset=`tput sgr0`
 
 function ctr_c_handler(){
-	echo -e "\nclosing API..." 
-	deactivate
+	echo -e "\n${green}closing API...\n${reset}see you later..." 
+	{
+		{
+		deactivate
+		} &> /dev/null
+	}||{
+		echo -e "${red}deactivate ${reset}the venv with : deactivate"
+	}
 }
 
 trap ctr_c_handler SIGINT 
