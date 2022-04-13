@@ -7,6 +7,8 @@ This branch is for the SQLite Database
 
 ## 🔧  Installation  
 
+### API 
+
 ```sh 
 git clone ... 
 cd Davinci 
@@ -22,7 +24,16 @@ pip install -r requirements.txt
 *on your client :*   
 `https://[your_ip]:5000`   
 *or*   
-`python3 src/client.py`  
+`python3 src/client.py`   
+
+### Database   
+
+```sh   
+sqlite3 davinci.db 
+.mode column 
+.headers on 
+select * from workers   
+``` 
 
 
 ## 📚 Source 
@@ -37,11 +48,13 @@ pip install -r requirements.txt
 <details open>
 	<summary>TODO</summary>
 	<br>
-	- [ ] : Link to DNS 
-	- [ ] : Handle errors 
-	- [ ] : Securing the API 
-	- [ ] : Adding more route ? 
-	- [ ] : Link API to trap  
+	- [ ] : add Database   
+	- [ ] : change import of api.py   
+	- [ ] : Link to DNS   
+	- [ ] : Handle errors   
+	- [ ] : Securing the API    
+	- [ ] : Adding more route ?   
+	- [ ] : Link API to trap     
 </details>
 
 ## Diagram    
