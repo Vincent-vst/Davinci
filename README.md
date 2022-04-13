@@ -3,6 +3,7 @@
 Davinci is a REST API in python built with FLASK.  
 The server is running with gunicorn.  
 The python version in `venv` is 3.8.10  
+This branch is for the SQLite Database
 
 ## 🔧  Installation  
 
