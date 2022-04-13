@@ -8,7 +8,7 @@ from ressource.database import Database
 app = Flask(__name__)
 api = Api(app)
 api.add_resource(Transcript, "/transcript/<string:audio>")
-api.add_resource(Documentation, "/documentation")
+api.add_resource(Documentation, "/documentation", methods=['GET', 'POST'])
 api.add_resource(Database, "/database")
 
 if __name__ == "__main__" :  
