@@ -48,13 +48,14 @@ select * from workers
 <details open>
 	<summary>TODO</summary>
 	<br>
-	- [ ] : add Database   
+	- [x] : add Database   
+	- [ ] : fix path on import   
 	- [ ] : change import of api.py   
 	- [ ] : Link to DNS   
 	- [ ] : Handle errors   
 	- [ ] : Securing the API    
-	- [ ] : Adding more route ?   
-	- [ ] : Link API to trap     
+	- [x] : Adding more route ?   
+	- [x] : Link API to trap     
 </details>
 
 ## Diagram    
