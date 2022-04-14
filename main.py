@@ -78,7 +78,7 @@ class Video(Resource):
 		return '', 204
 
 
-api.add_resource(Video, "/video/<int:video_id>")
+api.add_resource(Video, "/workers/<int:video_id>")
 
 if __name__ == "__main__":
-	app.run(debug=True, port=3002)
+	app.run(debug=True, host='0.0.0.0',  port=5000)
