@@ -1,0 +1,11 @@
+create table workers (
+id INT PRIMARY KEY NOT NULL, 
+task VARCHAR2(100), 
+pwd VARCHAR2(100), 
+occurence_id VARCHAR2(100),
+status VARCHAR2(100)
+); 
+
+insert into workers values (1, 'TRAP', '/home/1.VIP', 'bea2022.v1', 'success');   
+insert into workers values (2, 'IL', '/home/2.VIP', 'bea2022.v2', 'pending'); 
+insert into workers values (3, 'TAP', '/home/3.VIP', 'bea2022.v3', 'failure'); 
