@@ -1,3 +1,9 @@
+
+from flask_restful import Resource, marshal_with, abort, reqparse, API
+from flask_sqlalchemy import SQLAlchemy
+
+
+
 class Video(Resource):
 	@marshal_with(resource_fields)
 	def get(self, video_id):
