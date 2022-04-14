@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
+import sys
 
 app = Flask(__name__)
 api = Api(app)
@@ -81,4 +82,4 @@ class Video(Resource):
 api.add_resource(Video, "/workers/<int:video_id>")
 
 if __name__ == "__main__":
-	app.run(debug=True, host='0.0.0.0',  port=5000)
+	app.run(debug=True, host='0.0.0.0',  port=sys.argv[1])
