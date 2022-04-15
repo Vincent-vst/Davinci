@@ -22,7 +22,7 @@ def workers():
     if request.method == "GET":
         cursor = conn.execute("SELECT * FROM workers")
         workers = [
-            dict(id=row[0], task=row[1], pwd=row[2], status=row[3])
+            dict(id=row[0], task=row[1], pwd=row[2], status=row[3], audio_sample=row[4])
             for row in cursor.fetchall()
         ]
         if workers is not None:
@@ -32,9 +32,10 @@ def workers():
         new_task = request.form["task"]
         new_lang = request.form["pwd"]
         new_status = request.form["status"]
-        sql = """INSERT INTO workers (task, pwd, status)
-                 VALUES (?, ?, ?)"""
-        cursor = cursor.execute(sql, (new_task, new_lang, new_status))
+        new_audio_sample = request.form["audio_sample"]
+        sql = """INSERT INTO workers (task, pwd, status, audio_sample)
+                 VALUES (?, ?, ?, ?)"""
+        cursor = cursor.execute(sql, (new_task, new_lang, new_status, new_audio_sample))
         conn.commit()
         return f"worker with the id: 0 created successfully", 201
 
@@ -58,17 +59,20 @@ def single_workers(id):
         sql = """UPDATE workers 
                 SET task=?,
                     pwd=?,
-                    status=?
+                    status=?,
+                    audio_sample=?
                 WHERE id=? """
 
         task = request.form["task"]
         pwd = request.form["pwd"]
         status = request.form["status"]
+        audio_sample = request.form["audio_sample"]
         updated_workers = {
             "id": id,
             "task": task,
             "pwd": pwd,
             "status": status,
+            "audio_sample": audio_sample,
         }
         conn.execute(sql, (task, pwd, status, id))
         conn.commit()

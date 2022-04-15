@@ -14,12 +14,12 @@ insert(){
 	read path
 	echo -e 'status : '
 	read status 
-	curl -X POST -F 'task=$task' -F 'pwd=$path' -F 'status=$status' http://$host:$port/workers 
+	curl -X POST -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'status='"$status"'' http://$host:$port/workers 
 	
 }
 
-# get
 insert 
+get 
 
 # # insert in database 
 # curl -X POST -F 'author=vincent' -F 'language=en' -F 'title=UwU' http://127.0.0.1:3002/books 
