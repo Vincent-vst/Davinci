@@ -8,29 +8,44 @@ get(){
 }
 
 insert(){
-	echo -e 'task : '
+	echo -n 'task : '
 	read task
-	echo -e 'pwd : '
+	echo -n 'pwd : '
 	read path
-	echo -e 'status : '
+	echo -n 'status : '
 	read status 
-	curl -X POST -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'status='"$status"'' http://$host:$port/workers 
+	echo -n 'audio_sample : '
+	read audio_sample
+	curl -X POST -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'status='"$status"'' -F 'audio_sample='"$audio_sample"'' http://$host:$port/workers 
 	
 }
 
-insert 
-get 
+delete(){
+	echo -n 'id : '
+	read identifiant 
+	curl -X DELETE http://$host:$port/workers/$identifiant 
+}
 
-# # insert in database 
-# curl -X POST -F 'author=vincent' -F 'language=en' -F 'title=UwU' http://127.0.0.1:3002/books 
+main(){
+	echo -n 'what do you want to do ? [get/insert/delete]'
+	read choice 
+	case $choice in 
+		get)
+			# echo "printing db"
+			get
+			;;
+		insert) 
+			# echo "insert into db"
+			insert
+			;; 
+		delete)
+			# echo "deleting db"
+			delete
+			;; 
+		*) 
+			echo 'dafuk you want'
+			;; 
+	esac 
+}
 
-# # get all database 
-# curl http://127.0.0.1:3002/books  
-
-# # get one item 
-# curl http://127.0.0.1:3002/book/1
-
-# # delete from database  
-# curl -X DELETE http://127.0.0.1:3002/book/1 
-
-
+main 
