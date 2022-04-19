@@ -1,19 +1,40 @@
 import requests 
 
 url = 'http://127.0.0.1:3002/workers'
-# example_item = {'task' : 'TRAP', 'pwd' : '/tmp', 'audio_sample' : 'bea.json', 'status' : 'success'}
 
 
+"""
+description : insert in API database 
+parameters : dictionary -> {'task' : task, 'pwd' : pwd, 'audio_sample' : audio_sample, 'status' : status}
+return : requests.Response Object 
+"""
 def insert(item) : 
     return requests.post(url, data=item)
 
+"""
+description : select * from workers; in API database  
+parameters : None  
+return : requests.Response Object 
+"""
 def get() : 
     return requests.get(url)
 
+"""
+description : delete row in API database  
+parameters : int -> the id of the row that needs to be deleted  
+return : requests.Response Object 
+"""
 def delete(id_row) : 
     return requests.delete(url + '/' + str(id_row))
 
+#TODO : update() 
 
+"""
+description : ask user input to perfom various action {update | insert | delete} on a database
+parameters : None 
+type : None 
+return : None 
+"""
 def main() : 
     cmd = input("action to perform : [get/delete/insert] ")
     match(cmd) : 
@@ -21,25 +42,13 @@ def main() :
             response = get()
             print(response.json())
         case "insert" :
-            print("inserting into database ")
-            task = input("task : ")
-            pwd = input("pwd : ")
-            audio_sample = input("audio_sample : ")
-            status = input("status : ")
+            task, pwd, audio_sample, status = input("insert task, pwd, audio_sample, status : ").split()
             row = {'task' : task, 'pwd' : pwd, 'audio_sample' : audio_sample, 'status' : status}
             print(insert(row).text)
         case "delete" : 
             id_row = input("which line do you want to delete ? ")
             print(delete(id_row).text)
 
-main()
 
-
-# print(get_db.json())
-# def update(): 
-# update_item = { 'id' : 3, 'task' : 'TRAP', 'pwd' : '/tmp', 'audio_sample' : 'bea.json', 'status' : 'success'}
-# update_in_db = requests.put (url, data=update_item) #Method not allowed : 405 
-
-# print(update_in_db.text)
-
-# print(delete_in_db.text)
+if __name__ == '__main__' : 
+    main()
