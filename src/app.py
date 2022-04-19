@@ -1,10 +1,16 @@
-from flask import Flask, request, jsonify
-import json
+from flask import Flask, request, jsonify #TODO : fix warning in flask
+import json #TODO : is json really needed ? 
 import sqlite3
 
 app = Flask(__name__)
 
-
+"""
+description : insert in API database 
+parameters : None 
+return : connection status 
+rtype : boolean   
+raise : error connection
+"""
 def db_connection():
     conn = None
     try:
@@ -13,6 +19,13 @@ def db_connection():
         print(e)
     return conn
 
+"""
+description : API function when no arguments is set in the URL  
+parameters : None 
+return : get what is in the database 
+rtype : json 
+raise : TODO  
+"""
 @app.route("/workers", methods=["GET", "POST"])
 def workers():
     conn = db_connection()
@@ -27,7 +40,14 @@ def workers():
         if workers is not None:
             return jsonify(workers)
 
-
+"""
+description : main API function. handle GET|PUT|DELETE 
+parameters : id 
+ptype : int 
+return : the output of the command
+rtype : json | str
+raise : 404 | 200  
+"""
 @app.route("/workers/<int:id>", methods=["GET", "PUT", "DELETE"])
 def single_workers(id):
     conn = db_connection()
