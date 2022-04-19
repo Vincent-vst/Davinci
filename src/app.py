@@ -64,6 +64,7 @@ def single_workers(id):
         }
         conn.execute(sql, (task, pwd, status, id))
         conn.commit()
+        #TODO : send lorem ipsum to \\garros\STAGIAIRES 
         return jsonify(updated_workers)
 
     if request.method == "DELETE":
