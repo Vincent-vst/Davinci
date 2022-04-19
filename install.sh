@@ -1,13 +1,24 @@
 #! /bin/bash
 
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+
+
 prerequisite(){
-    sudo apt update
-    sudo apt install nodejs
-    npm install pm2@latest -g
+	if [  -n "$(uname -a | grep Ubuntu)" ]; then
+	    sudo apt update
+		sudo apt install nodejs
+		npm install pm2@latest -g
+	else
+		echo "${red}[error] : ${reset}unsuported distro"
+	fi  
 }
 
 daemon(){
-    pm2 start python3 src/app.py
+	{
+		pm2 start python3 ./src/app.py
+	} &> /dev/null
 }
 
 usage(){
@@ -43,3 +54,45 @@ usage(){
     done
 }
 
+install(){ 
+
+	# activating venv
+	case $SHELL in 
+		*/zsh) 
+			echo "${green}[ZSH] : ${reset} installing Davinci ... "
+			source ./venv/bin/activate
+			# ^ this isn't gonna make the terminal (venv) once the script is done
+			# cause a subprocess can't change its parent environment ... 
+			;;
+		*/bash) 
+			echo "${green}[BASH] : ${reset} installing Davinci ... "
+			source ./venv/bin/activate
+			;; 
+		*/fish) 
+			echo "${green}[FISH] : ${reset} installing Davinci ... "
+			{
+				source ./venv/bin/activate.fish
+			} || {
+				echo -e "${red}[error] : \n${reset}venv is running on some problem in fish \ndunno why tho ...\n[suggestion] : source venv/bin/activate.fish"  
+			}
+			;;
+		*) 
+			echo "unsuported $SHELL"
+	esac 
+	
+	# install requierements
+	{
+		pip install -r requirements.txt
+	} &> /dev/null
+
+}
+
+summary(){
+	pm2 list 
+}
+
+
+prerequisite
+install 
+daemon
+summary
