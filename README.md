@@ -42,11 +42,24 @@ python3 tests/client.py
 ## Diagram    
 
 ```mermaid
-
 flowchart LR 
-	W("windows") ---> S[["simdoc"]]  
-	W <-.-> D[("database")] 
-	S <--> D 
+
+	%% Colors %%
+	classDef blue fill:#2374f7,stroke:#000,stroke-width:2px,color:#fff
+	classDef pink fill:#eb3dd6,stroke:#000,stroke-width:2px,color:#fff
+	classDef orange fill:#fc822b,stroke:#000,stroke-width:2px,color:#fff
+	classDef red fill:#ed2633,stroke:#000,stroke-width:2px,color:#fff
+	classDef green fill:#16b522,stroke:#000,stroke-width:2px,color:#fff
+
+	%% Flowchart %% 
+	W("windows"):::red <---> |requet/response|S[["Simdoc"]]
+	W <-.-> |check status|D[("Database")]:::green
+	S <--> |fill|D
+	D ---> TR("trap"):::blue
+	D ---> IL("IL")
+	D ---> TA("tap")
+	
+
 ``` 
 
 
