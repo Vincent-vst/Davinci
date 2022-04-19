@@ -17,6 +17,7 @@ parameters : None
 return : requests.Response Object 
 """
 def get() : 
+    #TODO : get with id 
     return requests.get(url)
 
 """
@@ -27,7 +28,7 @@ return : requests.Response Object
 def delete(id_row) : 
     return requests.delete(url + '/' + str(id_row))
 
-#TODO : update() 
+#TODO : update() method  
 
 """
 description : ask user input to perfom various action {update | insert | delete} on a database
