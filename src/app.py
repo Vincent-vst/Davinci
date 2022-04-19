@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify #TODO : fix warning in flask
+from flask import Flask, request, jsonify 
 import json #TODO : is json really needed ? 
 import sqlite3
 
