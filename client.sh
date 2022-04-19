@@ -43,7 +43,7 @@ main(){
 			delete
 			;; 
 		*) 
-			echo 'dafuk you want'
+			echo 'dafuk you want ?'
 			;; 
 	esac 
 }
