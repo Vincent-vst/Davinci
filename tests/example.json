@@ -1,0 +1,14 @@
+{
+	"id": 8, 
+	"task": "trap", 
+	"pwd": "//garros/STAGIAIRES/subburanam.vengadessane/pyAudioLabs-samplitude-vip-interface/test_samplitude/20220415_test_duree_fichier_objet/projet60s_marqueurs.VIP", 
+	"status": "started", 
+	"audio_sample": [
+		{
+			"start": 0.0, 
+			"len": 13640.8125, 
+			"name": "test"
+		}
+	]
+}
+

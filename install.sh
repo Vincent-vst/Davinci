@@ -4,10 +4,12 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 
+set -e
+
 
 prerequisite(){
 	if [  -n "$(uname -a | grep Ubuntu)" ]; then
-	    sudo apt update
+		sudo apt update
 		sudo apt install nodejs
 		npm install pm2@latest -g
 	else
@@ -15,7 +17,7 @@ prerequisite(){
 	fi  
 }
 
-daemon(){
+davinci_daemon(){
 	{
 		pm2 start python3 ./src/app.py
 	} &> /dev/null
@@ -94,5 +96,5 @@ summary(){
 
 prerequisite
 install 
-daemon
+davinci_daemon
 summary
