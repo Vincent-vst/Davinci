@@ -1,4 +1,5 @@
 import sqlite3   
+import json 
 
 def db_connection() : 
     conn = None 
@@ -8,10 +9,16 @@ def db_connection() :
         print(e)
     return conn
 
-conn = db_connection()
+def print_database() : 
+    conn = db_connection()
+    with conn :
+        for row in conn.execute('select * from workers').fetchall(): 
+            print(row)
 
-with conn :
-    for row in conn.execute('select * from workers').fetchall(): 
-        print(row)
 
+def get_json(path) : 
+    with open (path) as f : 
+        data = json.load(f)
+    return data
 
+print(get_json('../tests/example.json'))
