@@ -1,16 +1,10 @@
-from flask import Flask, request, jsonify 
-import json #TODO : is json really needed ? 
+from flask import Flask, request, jsonify
+import json
 import sqlite3
 
 app = Flask(__name__)
 
-"""
-description : insert in API database 
-parameters : None 
-return : connection status 
-rtype : boolean   
-raise : error connection
-"""
+
 def db_connection():
     conn = None
     try:
@@ -19,13 +13,7 @@ def db_connection():
         print(e)
     return conn
 
-"""
-description : API function when no arguments is set in the URL  
-parameters : None 
-return : get what is in the database 
-rtype : json 
-raise : TODO  
-"""
+
 @app.route("/workers", methods=["GET", "POST"])
 def workers():
     conn = db_connection()
@@ -40,14 +28,18 @@ def workers():
         if workers is not None:
             return jsonify(workers)
 
-"""
-description : main API function. handle GET|PUT|DELETE 
-parameters : id 
-ptype : int 
-return : the output of the command
-rtype : json | str
-raise : 404 | 200  
-"""
+    if request.method == "POST":
+        new_task = request.form["task"]
+        new_lang = request.form["pwd"]
+        new_status = request.form["status"]
+        new_audio_sample = request.form["audio_sample"]
+        sql = """INSERT INTO workers (task, pwd, status, audio_sample)
+                 VALUES (?, ?, ?, ?)"""
+        cursor = cursor.execute(sql, (new_task, new_lang, new_status, new_audio_sample))
+        conn.commit()
+        return f"worker with the id: 0 created successfully", 201
+
+
 @app.route("/workers/<int:id>", methods=["GET", "PUT", "DELETE"])
 def single_workers(id):
     conn = db_connection()
@@ -61,7 +53,7 @@ def single_workers(id):
         if workers is not None:
             return jsonify(workers), 200
         else:
-            return "Not found", 404
+            return "Something wrong", 404
 
     if request.method == "PUT":
         sql = """UPDATE workers 
@@ -84,7 +76,6 @@ def single_workers(id):
         }
         conn.execute(sql, (task, pwd, status, id))
         conn.commit()
-        #TODO : send lorem ipsum to \\garros\STAGIAIRES 
         return jsonify(updated_workers)
 
     if request.method == "DELETE":
@@ -95,4 +86,4 @@ def single_workers(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3002)
+    app.run(debug=True, host='0.0.0.0', port=3002)
