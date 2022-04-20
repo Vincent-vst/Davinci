@@ -5,6 +5,12 @@ import sqlite3
 app = Flask(__name__)
 
 
+"""
+description : test connection with sqlite database 
+parameters : None 
+type : None 
+return : connection  
+"""
 def db_connection():
     conn = None
     try:
@@ -13,6 +19,11 @@ def db_connection():
         print(e)
     return conn
 
+"""
+description : API method when no arguments are provided  
+parameters : None 
+return : error code & message 
+"""
 
 @app.route("/workers", methods=["GET", "POST"])
 def workers():
@@ -40,6 +51,11 @@ def workers():
         return f"worker with the id: 0 created successfully", 201
 
 
+"""
+description : API method when table id is provided  
+parameters : None 
+return : error code & message
+"""
 @app.route("/workers/<int:id>", methods=["GET", "PUT", "DELETE"])
 def single_workers(id):
     conn = db_connection()
