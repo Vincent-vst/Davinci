@@ -44,11 +44,10 @@ def workers():
         new_lang = request.form["pwd"]
         new_status = request.form["status"]
         new_audio_sample = request.form["audio_sample"]
-        sql = """INSERT INTO workers (task, pwd, status, audio_sample)
-                 VALUES (?, ?, ?, ?)"""
+        sql = """INSERT INTO workers (task, pwd, status, audio_sample) VALUES (?, ?, ?, ?)"""
         cursor = cursor.execute(sql, (new_task, new_lang, new_status, new_audio_sample))
         conn.commit()
-        return f"worker with the id: 0 created successfully", 201
+        return f"worker created successfully", 201
 
 
 """
@@ -69,16 +68,10 @@ def single_workers(id):
         if workers is not None:
             return jsonify(workers), 200
         else:
-            return "Something wrong", 404
+            return "Error", 404
 
     if request.method == "PUT":
-        sql = """UPDATE workers 
-                SET task=?,
-                    pwd=?,
-                    status=?,
-                    audio_sample=?
-                WHERE id=? """
-
+        sql = """UPDATE workers SET task=?, pwd=?, status=?, audio_sample=? WHERE id=? """
         task = request.form["task"]
         pwd = request.form["pwd"]
         status = request.form["status"]
@@ -102,4 +95,4 @@ def single_workers(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=3002)
+    app.run(debug=True, port=3001)
