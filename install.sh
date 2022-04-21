@@ -19,7 +19,8 @@ prerequisite(){
 
 davinci_daemon(){
 	{
-		pm2 start python3 ./src/app.py
+		# pm2 start python3 ./src/app.py
+		pm2 start src/app.py --name Davinci --interpreter python3
 	} &> /dev/null
 }
 
