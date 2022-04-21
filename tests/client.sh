@@ -1,6 +1,6 @@
 #! /bin/bash 
 
-host=127.0.0.1
+host=10.16.0.250
 port=3002 
 
 get(){

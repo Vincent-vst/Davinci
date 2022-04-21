@@ -50,7 +50,8 @@ return : None
 #             id_row = input("which line do you want to delete ? ")
 #             print(delete(id_row).text)
 
-print(delete(13))
-
+# print(delete(13))
+item = {'task' : 'test', 'pwd' : 'test', 'audio_sample' : 'test', 'status' : 'test'}
+print(insert(item))
 # if __name__ == '__main__' : 
 #     main()
