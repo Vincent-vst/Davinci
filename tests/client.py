@@ -36,20 +36,21 @@ parameters : None
 type : None 
 return : None 
 """
-def main() : 
-    cmd = input("action to perform : [get/delete/insert] ")
-    match(cmd) : 
-        case "get" : 
-            response = get()
-            print(response.json())
-        case "insert" :
-            task, pwd, audio_sample, status = input("insert task, pwd, audio_sample, status : ").split()
-            row = {'task' : task, 'pwd' : pwd, 'audio_sample' : audio_sample, 'status' : status}
-            print(insert(row).text)
-        case "delete" : 
-            id_row = input("which line do you want to delete ? ")
-            print(delete(id_row).text)
+# def main() : 
+#     cmd = input("action to perform : [get/delete/insert] ")
+#     match(cmd) : 
+#         case "get" : 
+#             response = get()
+#             print(response.json())
+#         case "insert" :
+#             task, pwd, audio_sample, status = input("insert task, pwd, audio_sample, status : ").split()
+#             row = {'task' : task, 'pwd' : pwd, 'audio_sample' : audio_sample, 'status' : status}
+#             print(insert(row).text)
+#         case "delete" : 
+#             id_row = input("which line do you want to delete ? ")
+#             print(delete(id_row).text)
 
+print(delete(13))
 
-if __name__ == '__main__' : 
-    main()
+# if __name__ == '__main__' : 
+#     main()
