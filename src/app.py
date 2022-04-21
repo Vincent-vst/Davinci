@@ -62,15 +62,15 @@ def single_workers(id):
     workers = None
     if request.method == "GET":
         cursor.execute("SELECT * FROM workers WHERE id=?", (id,))
-        rows = cursor.fetchall()
-        for r in rows:
-            workers = r
+        for row in cursor.fetchall():
+            workers = row
         if workers is not None:
             return jsonify(workers), 200
         else:
             return "Error", 404
 
     if request.method == "PUT":
+        # print(id)
         sql = """UPDATE workers SET task=?, pwd=?, status=?, audio_sample=? WHERE id=? """
         task = request.form["task"]
         pwd = request.form["pwd"]
@@ -83,9 +83,11 @@ def single_workers(id):
             "status": status,
             "audio_sample": audio_sample,
         }
-        conn.execute(sql, (task, pwd, status, id))
+        conn.execute(sql, (task, pwd, audio_sample, status, id))
+        # conn.execute("UPDATE workers SET task=? WHERE id=?", task,id)
         conn.commit()
         return jsonify(updated_workers)
+        # return "POUET"
 
     if request.method == "DELETE":
         sql = """ DELETE FROM workers WHERE id=? """
@@ -95,4 +97,4 @@ def single_workers(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3001)
+    app.run(debug=True,host='0.0.0.0', port=3001)

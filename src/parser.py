@@ -21,4 +21,5 @@ def get_json(path) :
         data = json.load(f)
     return data
 
-print(get_json('../tests/example.json'))
+# print(get_json('../tests/example.json'))
+print_database() 
