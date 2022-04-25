@@ -9,11 +9,18 @@ def db_connection() :
         print(e)
     return conn
 
-def print_database() : 
+def get_database() : 
     conn = db_connection()
+    id, task, pwd, audio_sample, status  = ([] for i in range(5))
     with conn :
         for row in conn.execute('select * from workers').fetchall(): 
-            print(row)
+            id.append(row[0])
+            task.append(row[1])
+            pwd.append(row[2])
+            status.append(row[3])
+            audio_sample.append(row[4])
+    return id, task, pwd, audio_sample, status
+
 
 
 def get_json(path) : 
@@ -21,5 +28,10 @@ def get_json(path) :
         data = json.load(f)
     return data
 
+id, task, pwd, audio_sample, status = get_database()
+print(audio_sample)
+# print(get_database())
+
 # print(get_json('../tests/example.json'))
-print_database() 
+# print_database() 
+
