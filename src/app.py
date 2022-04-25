@@ -43,7 +43,7 @@ def workers():
         new_lang = request.form["pwd"]
         new_status = request.form["status"]
         new_audio_sample = request.form["audio_sample"]
-        new_audio_sample = str(new_audio_sample) #TODO : <-- this might crash, but idk why tho ..
+        # new_audio_sample = str(new_audio_sample) #TODO : <-- this might crash, but idk why tho ..
         sql = """INSERT INTO workers (task, pwd, status, audio_sample) VALUES (?, ?, ?, ?)"""
         cursor = cursor.execute(sql, (new_task, new_lang, new_status, new_audio_sample))
         conn.commit()
@@ -70,7 +70,6 @@ def single_workers(id):
             return "Error", 404
 
     if request.method == "PUT":
-        # print(id)
         sql = """UPDATE workers SET task=?, pwd=?, status=?, audio_sample=? WHERE id=? """
         task = request.form["task"]
         pwd = request.form["pwd"]
@@ -84,10 +83,8 @@ def single_workers(id):
             "audio_sample": audio_sample,
         }
         conn.execute(sql, (task, pwd, audio_sample, status, id))
-        # conn.execute("UPDATE workers SET task=? WHERE id=?", task,id)
         conn.commit()
         return jsonify(updated_workers)
-        # return "POUET"
 
     if request.method == "DELETE":
         sql = """ DELETE FROM workers WHERE id=? """
