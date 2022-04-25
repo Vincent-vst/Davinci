@@ -1,6 +1,6 @@
 import requests 
 
-url = 'http://127.0.0.1:3002/workers'
+url = 'http://10.16.0.250:3001/workers'
 
 
 """
@@ -50,7 +50,14 @@ return : None
 #             id_row = input("which line do you want to delete ? ")
 #             print(delete(id_row).text)
 
-print(delete(13))
+# print(delete(13))
+
+task = input("insert task : ")
+pwd = input("insert pwd : ")
+audio_sample = input("insert audio_sample : ")
+status = input("insert status : ")
+row = {'task' : task, 'pwd' : pwd, 'audio_sample' : audio_sample, 'status' : status}
+print(insert(row).text)
 
 # if __name__ == '__main__' : 
 #     main()

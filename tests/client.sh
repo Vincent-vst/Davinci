@@ -1,7 +1,7 @@
 #! /bin/bash 
 
 host=127.0.0.1
-port=3002 
+port=3001 
 
 get(){
 	curl http://$host:$port/workers
