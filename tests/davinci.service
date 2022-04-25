@@ -1,0 +1,14 @@
+[Unit]
+Description=Vincent gunicorn server
+
+[Service]
+User=v_descatoire
+Group=tap-users
+WorkingDirectory=/home/v_descatoire/Developer/Davinci
+ExecStart=/home/v_descatoire/Developer/Davinci/dist/app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+

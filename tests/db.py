@@ -8,7 +8,7 @@ sql_query = """ create table workers (
     task text not null, 
     pwd text not null, 
     status text not null, 
-    audio_sample text not null
+    audio_sample json not null
 )
 
 """
