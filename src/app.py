@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
 import json
 import sqlite3
+# from werkzeug.middleware.profiler import ProfilerMiddleware
+
+
 
 app = Flask(__name__)
-
+# app = ProfilerMiddleware(app)
 
 """
 description : test connection with sqlite database 
@@ -43,7 +46,6 @@ def workers():
         new_lang = request.form["pwd"]
         new_status = request.form["status"]
         new_audio_sample = request.form["audio_sample"]
-        # new_audio_sample = str(new_audio_sample) #TODO : <-- this might crash, but idk why tho ..
         sql = """INSERT INTO workers (task, pwd, status, audio_sample) VALUES (?, ?, ?, ?)"""
         cursor = cursor.execute(sql, (new_task, new_lang, new_status, new_audio_sample))
         conn.commit()
