@@ -1,9 +1,9 @@
-# Davinci 🐝
+# TAP web API 🐝
 
-Davinci is a REST API in python built with FLASK.  
+REST API in python built with FLASK.  
 The server is running with gunicorn.  
 Python version : `Python 3.10.4`   
-Branch : security
+<!-- Branch : security -->
 
 ## 🔧  Installation  
 
@@ -33,10 +33,10 @@ python3 tests/client.py
 <details open>
 	<summary>TODO</summary>
 	<br>
-    - [ ] Link to DNS    
-    - [ ] Handle 400 | 403 | 500 | 404 errors    
-    - [ ] Securing the API    
-    - [x] Fix curl -X POST   
+    - [ ] Link to DNS    <br>
+    - [ ] Handle 400 | 403 | 500 | 404 errors    <br>
+    - [ ] Securing the API    <br>
+    - [x] Fix curl -X POST   <br>
  
 </details>
 
@@ -56,9 +56,9 @@ flowchart LR
 	W("windows"):::red <---> |requet/response|S[["Simdoc"]]
 	W <-.-> |check status|D[("Database")]:::green
 	S <--> |fill|D
-	D ---> TR("trap"):::blue
-	D ---> IL("IL")
-	D ---> TA("tap")
+	D <--> TR("trap"):::blue
+	D <--> IL("IL")
+	D <--> TA("tap")
 	
 
 ``` 
@@ -69,5 +69,5 @@ flowchart LR
 
 author : [vincent](https://www.github.com/Vincent-vst)   
 release date : *not released yet*    
-version : 0.3   
+version : 1.3   
 
