@@ -1,22 +1,28 @@
 #! /bin/bash 
 
 host=127.0.0.1
-port=3002 
+port=3001 
 
 get(){
 	curl http://$host:$port/workers
 }
 
 insert(){
+	echo -n 'user : '
+	read user 
 	echo -n 'task : '
 	read task
 	echo -n 'pwd : '
 	read path
-	echo -n 'status : '
-	read status 
 	echo -n 'audio_sample : '
 	read audio_sample
-	curl -X POST -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'status='"$status"'' -F 'audio_sample='"$audio_sample"'' http://$host:$port/workers 
+	echo -n 'priority : '
+	read priority
+	echo -n 'eta : '
+	read eta
+	echo -n 'status : '
+	read status
+	curl -X POST -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/workers 
 	
 }
 
@@ -27,17 +33,37 @@ delete(){
 }
 
 update(){
+
 	echo -n 'id : '
 	read id_request
+	echo -n 'user : '
+	read user 
 	echo -n 'task : '
 	read task
 	echo -n 'pwd : '
 	read path
-	echo -n 'status : '
-	read status 
 	echo -n 'audio_sample : '
 	read audio_sample
-	curl -X PUT -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'status='"$status"'' -F 'audio_sample='"$audio_sample"'' http://$host:$port/workers/$id_request
+	echo -n 'priority : '
+	read priority
+	echo -n 'eta : '
+	read eta
+	echo -n 'status : '
+	read status
+	curl -X PUT -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/workers/$id_request
+	
+
+	# echo -n 'id : '
+	# read id_request
+	# echo -n 'task : '
+	# read task
+	# echo -n 'pwd : '
+	# read path
+	# echo -n 'status : '
+	# read status 
+	# echo -n 'audio_sample : '
+	# read audio_sample
+	# curl -X PUT -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'status='"$status"'' -F 'audio_sample='"$audio_sample"'' http://$host:$port/workers/$id_request
 	
 }
 
