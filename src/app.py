@@ -4,14 +4,12 @@ import sqlite3
 
 app = Flask(__name__)
 
-
-"""
-description : test connection with sqlite database 
-parameters : None 
-type : None 
-return : connection  
-"""
 def db_connection():
+    """Test connection with sqlite database 
+    raise : error connection 
+    return : connection to database 
+    rtype : sqlite3.Connection
+    """
     conn = None
     try:
         conn = sqlite3.connect("tapwebapi.db")
@@ -19,13 +17,13 @@ def db_connection():
         print(e)
     return conn
 
-"""
-description : API method when no arguments are provided  
-parameters : None 
-return : error code & message 
-"""
+
 @app.route("/api", methods=["GET", "POST"])
 def workers():
+    """GET/POST method when no arguments are provided  
+    return : error code & message 
+    rtype : int, str
+    """
     conn = db_connection()
     cursor = conn.cursor()
 
@@ -44,42 +42,34 @@ def workers():
         new_pwd = request.form["pwd"]
         new_audio_sample = request.form["audio_sample"]
         new_priority = request.form["priority"]
-        # new_priority = int(new_priority)
         new_eta = request.form["eta"]
         new_status = request.form["status"]
+        # TODO : might be a good idea to put those test in an external method
         try :
             if not (0 <= int(new_priority) <= 2) : 
                 abort(400, "priority is not in range [0,2]")
         except ValueError : 
             abort(400, "priority is not an integer")
+        if new_task.upper() not in ["TRAP", "IL", "TAP"] : 
+            abort(400, "task is not in [TRAP, IL, TAP]")
+        if new_status.lower() not in ["success", "pending", "failure", "retry", "abort"] :
+            abort(400, "status not in [success, pending, failure, retry, abort]")
         sql = """INSERT INTO tapjoblist (user, task, pwd, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?)"""
         cursor = cursor.execute(sql, (new_user, new_task, new_pwd, new_audio_sample, new_priority, new_eta, new_status))
         conn.commit()
         return f"worker created successfully", 201
 
 
-"""
-description : API method when table id is provided  
-parameters : None 
-return : error code & message
-"""
+
 @app.route("/api/<int:id>", methods=["GET", "PUT", "DELETE"])
 def single_workers(id):
+    """ PUT/DELETE method when id is provided  
+    return : error code & message
+    rtype : int, str
+    """
     conn = db_connection()
-    # cursor = conn.cursor()
-    # workers = None
-
-    # if request.method == "GET":
-    #     cursor.execute("SELECT * FROM workers WHERE id=?", (id,))
-    #     for row in cursor.fetchall():
-    #         workers = row
-    #     if workers is not None:
-    #         return jsonify(workers), 200
-    #     else:
-    #         return "Error", 404
 
     if request.method == "PUT":
-        # print(id)
         sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
         user = request.form["user"]
         task = request.form["task"]
@@ -88,6 +78,7 @@ def single_workers(id):
         priority = request.form["priority"]
         eta = request.form["eta"]
         status = request.form["status"]
+        #TODO : handle errors when priority != int && task | status not in [.. .. ..] 
         updated_workers = {
             "id": id,
             "user" : user, 
