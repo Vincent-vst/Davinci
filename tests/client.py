@@ -49,7 +49,7 @@ return : None
 #         case "delete" : 
 #             id_row = input("which line do you want to delete ? ")
 #             print(delete(id_row).text)
-data={'user':'tom', 'task':'TRAP', 'pwd':'/usr', 'audio_sample':'{"name": "tom"}', 'priority' : 2, 'eta':'timedate()', 'status':'pending'}
+data={'user':'tom', 'task':'trap', 'pwd':'/usr', 'audio_sample':'{"name": "tom"}', 'priority' : 2, 'eta':'timedate()', 'status':'pending'}
 print(insert(data)) 
 # print(delete(13))
 

@@ -8,21 +8,8 @@ import requests
 # requests.post(url, data=test)
 # var = input("input var : ")
 # print(var)
-var = 3
+var = "TrAP" 
+available_task = ["TRAP", "TAP", "IL"]
 
-# if (not isinstance(var, int)) or (0 <= var <=2): 
-#     print("not int or not in range [0,2]")
-
-if not (isinstance(var, int) and (0 <= var <= 2)) :
-    print('not int or not in [0,2]')
-
-
-# if (not isinstance(var, int)) : 
-#     print('not int')
-#     # if not (0 <= int(var) <= 2) : 
-#     #     print('not in range [0,2]') 
-
-
-# if not (0 <= int(var) <= 2) or (not isinstance(var, int)): 
-#     print("not in range [0,2] or not int ")
-
+if var.upper() not in available_task :
+    print("error")

@@ -29,7 +29,7 @@ insert(){
 delete(){
 	echo -n 'id : '
 	read identifiant 
-	curl -X DELETE http://$host:$port/workers/$identifiant 
+	curl -X DELETE http://$host:$port/api/$identifiant 
 }
 
 update(){

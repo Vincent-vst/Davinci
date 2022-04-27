@@ -17,9 +17,12 @@ def db_connection():
         print(e)
     return conn
 
+@app.route("/documentation")
+def documentation():
+    return "<h1>Documentation</h1>"
 
-@app.route("/api", methods=["GET", "POST"])
-def workers():
+@app.route("/api", methods=["GET"])
+def query_jobs():
     """GET/POST method when no arguments are provided  
     return : error code & message 
     rtype : int, str
@@ -36,6 +39,10 @@ def workers():
         if workers is not None:
             return jsonify(workers)
 
+@app.route("/api", methods=["POST"])
+def create_jobs():
+    conn = db_connection()
+    cursor = conn.cursor()
     if request.method == "POST":
         new_user = request.form["user"]
         new_task = request.form["task"]
@@ -61,8 +68,8 @@ def workers():
 
 
 
-@app.route("/api/<int:id>", methods=["GET", "PUT", "DELETE"])
-def single_workers(id):
+@app.route("/api/<int:id>", methods=["PUT"])
+def update_jobs(id):
     """ PUT/DELETE method when id is provided  
     return : error code & message
     rtype : int, str
@@ -93,6 +100,9 @@ def single_workers(id):
         conn.commit()
         return jsonify(updated_workers)
 
+@app.route("/api/<int:id>", methods=["DELETE"])
+def delete_jobs(id) :
+    conn = db_connection()
     if request.method == "DELETE":
         sql = """ DELETE FROM tapjoblist WHERE id=? """
         conn.execute(sql, (id,))
@@ -101,4 +111,4 @@ def single_workers(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True,host='0.0.0.0', port=3001)
+    app.run(debug=True, host='0.0.0.0', port=3001)
