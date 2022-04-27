@@ -1,11 +1,17 @@
-# Davinci 🐝
+# 🐝 Davinci 
 
 Davinci is a REST API in python built with FLASK.  
 The server is running with gunicorn.  
 Python version : `Python 3.10.4`   
 <!-- Branch : security -->
 
-## 🔧  Installation  
+## 🛠  Built with  
+- Flask   
+- SQLite   
+- HTML/CSS/JS  
+- Gunicorn   
+
+## 🪛  Installation  
 
 ```sh 
 git clone ... 
@@ -28,19 +34,18 @@ python3 tests/client.py
 [tutorial sqlite/flask](https://youtu.be/HX-ChCQfJEo)    
  
 
-## Roadmap  
+## 🚦 Roadmap  
 
 <details open>
 	<summary>TODO</summary>
-	<br>
-    - [ ] Link to DNS    
-    - [ ] Handle 400 | 403 | 500 | 404 errors    
-    - [ ] Securing the API    
-    - [x] Fix curl -X POST   
- 
+	<!-- <br> -->
+    - [ ] Link to DNS    <br>
+    - [ ] Handle 400 | 403 | 500 | 404 errors    <br>
+    - [ ] Securing the API    <br>
+    - [x] Fix curl -X POST   <br>
 </details>
 
-## Diagram    
+## 📕 Diagram    
 
 ```mermaid
 flowchart LR 
@@ -52,16 +57,38 @@ flowchart LR
 	classDef red fill:#ed2633,stroke:#000,stroke-width:2px,color:#fff
 	classDef green fill:#16b522,stroke:#000,stroke-width:2px,color:#fff
 
-	%% Flowchart %% 
-	W("windows"):::red <---> |requet/response|S[["Simdoc"]]
-	W <-.-> |check status|D[("Database")]:::green
+	%% Variables %% 
+	W("windows")
+	S[["simdoc"]] 
+	D[("database")]
+
+	%% Flowchart APi%% 
+	W:::red <---> |requet/response|S
+	W <-.-> |check status|D:::green
 	S <--> |fill|D
-	D ---> TR("trap"):::blue
-	D ---> IL("IL")
-	D ---> TA("tap")
-	
+	D ---> R("cgroup") 
+	click J "www.google.com"
+  
+	R --o TR("trap"):::blue
+	R --o IL("IL")
+	R --x TA("tap")
 
 ``` 
+
+### Database schema  
+
+| id `int` | user `varchar2(100)` | task `varchar2(100)` | pwd `varchar2(100)` | audio_sample `json` | priorité `int` | ETA `datetime` | status `varchar2(100)` |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Tom | TRAP | ~/tmp/1.VIP | {"name":"Tom"} | 0 | 00:00:00 | succes |
+| 2 | Lua | IL | ~/2.VIP | {"start":0.00} | 1 | 00:00:20 | pending |
+| 3 | Louise | TAP  | /usr/3.VIP | {"len":3.00} | 2 | 00:20:00 | error |
+| 4 | Ferris | TRAP | /tmp/4.VIP | {"start":0.20} | 0 | 00:00:28 | failure  |
+
+
+
+## 📝 License  
+
+Distributed under the MIT License. See LICENSE.txt for more information.   
 
 
 ## 👤 About  
@@ -69,5 +96,5 @@ flowchart LR
 
 author : [vincent](https://www.github.com/Vincent-vst)   
 release date : *not released yet*    
-version : 0.3   
+version : 1.4
 
