@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, render_template
 import json
 import sqlite3
 
@@ -17,9 +17,13 @@ def db_connection():
         print(e)
     return conn
 
+@app.route("/") 
+def index() :
+    return render_template("index.html")
+
 @app.route("/documentation")
 def documentation():
-    return "<h1>Documentation</h1>"
+    return render_template("documentation.html")
 
 @app.route("/api", methods=["GET"])
 def query_jobs():
@@ -111,4 +115,4 @@ def delete_jobs(id) :
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=3001)
+    app.run(debug=True, port=3001)
