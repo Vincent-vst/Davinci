@@ -1,6 +1,6 @@
 import requests 
 
-url = 'http://127.0.0.1:3002/workers'
+url = 'http://10.16.0.250:3001/api'
 
 
 """
@@ -49,8 +49,9 @@ return : None
 #         case "delete" : 
 #             id_row = input("which line do you want to delete ? ")
 #             print(delete(id_row).text)
-
-print(delete(13))
+data={'user':'tom', 'task':'TRAP', 'pwd':'/usr', 'audio_sample':'{"name": "tom"}', 'priority' : 2, 'eta':'timedate()', 'status':'pending'}
+print(insert(data)) 
+# print(delete(13))
 
 # if __name__ == '__main__' : 
 #     main()

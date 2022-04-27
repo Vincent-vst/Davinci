@@ -4,7 +4,7 @@ host=127.0.0.1
 port=3001 
 
 get(){
-	curl http://$host:$port/workers
+	curl http://$host:$port/api
 }
 
 insert(){
@@ -22,7 +22,7 @@ insert(){
 	read eta
 	echo -n 'status : '
 	read status
-	curl -X POST -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/workers 
+	curl -X POST -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/api
 	
 }
 
@@ -50,7 +50,7 @@ update(){
 	read eta
 	echo -n 'status : '
 	read status
-	curl -X PUT -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/workers/$id_request
+	curl -X PUT -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/api/$id_request
 	
 
 	# echo -n 'id : '

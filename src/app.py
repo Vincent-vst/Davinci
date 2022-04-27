@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 import json
 import sqlite3
 
@@ -24,7 +24,7 @@ description : API method when no arguments are provided
 parameters : None 
 return : error code & message 
 """
-@app.route("/workers", methods=["GET", "POST"])
+@app.route("/api", methods=["GET", "POST"])
 def workers():
     conn = db_connection()
     cursor = conn.cursor()
@@ -44,8 +44,14 @@ def workers():
         new_pwd = request.form["pwd"]
         new_audio_sample = request.form["audio_sample"]
         new_priority = request.form["priority"]
+        # new_priority = int(new_priority)
         new_eta = request.form["eta"]
         new_status = request.form["status"]
+        try :
+            if not (0 <= int(new_priority) <= 2) : 
+                abort(400, "priority is not in range [0,2]")
+        except ValueError : 
+            abort(400, "priority is not an integer")
         sql = """INSERT INTO tapjoblist (user, task, pwd, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?)"""
         cursor = cursor.execute(sql, (new_user, new_task, new_pwd, new_audio_sample, new_priority, new_eta, new_status))
         conn.commit()
@@ -57,7 +63,7 @@ description : API method when table id is provided
 parameters : None 
 return : error code & message
 """
-@app.route("/workers/<int:id>", methods=["GET", "PUT", "DELETE"])
+@app.route("/api/<int:id>", methods=["GET", "PUT", "DELETE"])
 def single_workers(id):
     conn = db_connection()
     # cursor = conn.cursor()
