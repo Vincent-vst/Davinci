@@ -14,6 +14,8 @@ insert(){
 	read task
 	echo -n 'pwd : '
 	read path
+	echo -n 'occ_id : '
+	read occ_id
 	echo -n 'audio_sample : '
 	read audio_sample
 	echo -n 'priority : '
@@ -22,7 +24,7 @@ insert(){
 	read eta
 	echo -n 'status : '
 	read status
-	curl -X POST -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/api
+	curl -X POST -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'occ_id='"$occ_id"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/api
 	
 }
 
@@ -42,6 +44,8 @@ update(){
 	read task
 	echo -n 'pwd : '
 	read path
+	echo -n 'occ_id : '
+	read occ_id
 	echo -n 'audio_sample : '
 	read audio_sample
 	echo -n 'priority : '
@@ -50,7 +54,7 @@ update(){
 	read eta
 	echo -n 'status : '
 	read status
-	curl -X PUT -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/api/$id_request
+	curl -X PUT -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'occ_id='"$occ_id"''   -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/api/$id_request
 	
 
 	# echo -n 'id : '

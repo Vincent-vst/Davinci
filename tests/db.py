@@ -8,6 +8,7 @@ sql_query = """ create table tapjoblist (
     user text,
     task text not null, 
     pwd text not null, 
+    occ_id text not null,
     audio_sample json, 
     priority integer, 
     eta time,

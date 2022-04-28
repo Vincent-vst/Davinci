@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify, abort
 import json
 import sqlite3
 
-#TODO : redirect output of spkinx make html > in something like src/templates 
 app = Flask(__name__, static_folder='./templates/html')
 
 def db_connection():
@@ -18,6 +17,7 @@ def db_connection():
     except sqlite3.error as e:
         print(e)
     return conn
+
 
 @app.route("/") 
 def index() :
@@ -51,7 +51,7 @@ def query_jobs():
     if request.method == "GET":
         cursor = conn.execute("SELECT * FROM tapjoblist")
         workers = [
-            dict(id=row[0], user=row[1], task=row[2], pwd=row[3], audio_sample=row[4], priority=row[5], eta=row[6], status=row[7])
+            dict(id=row[0], user=row[1], task=row[2], pwd=row[3], occ_id=row[4], audio_sample=row[5], priority=row[6], eta=row[7], status=row[8])
             for row in cursor.fetchall()
         ]
         if workers is not None:
@@ -73,6 +73,7 @@ def create_jobs():
         new_user = request.form["user"]
         new_task = request.form["task"]
         new_pwd = request.form["pwd"]
+        new_occ_id = request.form["occ_id"]
         new_audio_sample = request.form["audio_sample"]
         new_priority = request.form["priority"]
         new_eta = request.form["eta"]
@@ -87,8 +88,8 @@ def create_jobs():
             abort(400, "task is not in [TRAP, IL, TAP]")
         if new_status.lower() not in ["success", "pending", "failure", "retry", "abort"] :
             abort(400, "status not in [success, pending, failure, retry, abort]")
-        sql = """INSERT INTO tapjoblist (user, task, pwd, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?)"""
-        cursor = cursor.execute(sql, (new_user, new_task, new_pwd, new_audio_sample, new_priority, new_eta, new_status))
+        sql = """INSERT INTO tapjoblist (user, task, pwd, occ_id, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
+        cursor = cursor.execute(sql, (new_user, new_task, new_pwd, new_occ_id, new_audio_sample, new_priority, new_eta, new_status))
         conn.commit()
         return f"worker created successfully", 201
 
@@ -106,10 +107,11 @@ def update_jobs(id):
     conn = db_connection()
 
     if request.method == "PUT":
-        sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
+        sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
         user = request.form["user"]
         task = request.form["task"]
         pwd = request.form["pwd"]
+        occ_id = request.form["occ_id"]
         audio_sample = request.form["audio_sample"]
         priority = request.form["priority"]
         eta = request.form["eta"]
@@ -120,12 +122,13 @@ def update_jobs(id):
             "user" : user, 
             "task": task,
             "pwd": pwd,
+            "occ_id": occ_id, 
             "audio_sample": audio_sample,
             "priority" : priority, 
             "eta" : eta, 
             "status": status,
         }
-        conn.execute(sql, (user, task, pwd, audio_sample, priority, eta, status, id))
+        conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, id))
         conn.commit()
         return jsonify(updated_workers)
 
