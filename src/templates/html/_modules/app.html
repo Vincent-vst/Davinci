@@ -32,11 +32,13 @@
           <div class="body" role="main">
             
   <h1>Source code for app</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">render_template</span>
+<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">abort</span>
+<span class="c1">#TODO : delete import json </span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="c1">#TODO : redirect output of spkinx make html &gt; in something like src/templates </span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">static_url_path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">static_folder</span><span class="o">=</span><span class="s1">&#39;../docs/_build/html/&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="db_connection"><a class="viewcode-back" href="../app.html#app.db_connection">[docs]</a><span class="k">def</span> <span class="nf">db_connection</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Test connection with sqlite database </span>
@@ -57,15 +59,28 @@
 <span class="sd">    return: homepage </span>
 <span class="sd">    rtype: html </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="s2">&quot;&lt;h3&gt;TAP web API&lt;/h3&gt;&lt;br&gt;&lt;a href=&#39;/api/docs/about.html&#39;&gt;documentation&lt;/a&gt;&quot;</span></div>
 
-<div class="viewcode-block" id="documentation"><a class="viewcode-back" href="../app.html#app.documentation">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/documentation&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">documentation</span><span class="p">():</span>
+<span class="c1"># @app.route(&quot;/api/documentation&quot;)</span>
+<span class="c1"># def documentation():</span>
+<span class="c1">#     &quot;&quot;&quot;Documentation page made with spinx.</span>
+<span class="c1">#     return: documentation page  </span>
+<span class="c1">#     rtype: html </span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     # return render_template(&quot;documentation.html&quot;)</span>
+<span class="c1">#     # return render_template(&quot;index.html&quot;) </span>
+<span class="c1">#     return app.send_static_file(&quot;index.html&quot;)</span>
+
+<span class="c1"># @app.route(&#39;/api/docs&#39;, defaults = {&#39;filename&#39;: &#39;module.html&#39;})</span>
+<div class="viewcode-block" id="documentation"><a class="viewcode-back" href="../app.html#app.documentation">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/docs/&lt;path:filename&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">documentation</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Documentation page made with spinx.</span>
 <span class="sd">    return: documentation page  </span>
 <span class="sd">    rtype: html </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;documentation.html&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">app</span><span class="o">.</span><span class="n">send_static_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+
 
 <div class="viewcode-block" id="query_jobs"><a class="viewcode-back" href="../app.html#app.query_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">query_jobs</span><span class="p">():</span>
@@ -85,6 +100,7 @@
         <span class="p">]</span>
         <span class="k">if</span> <span class="n">workers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">workers</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="create_jobs"><a class="viewcode-back" href="../app.html#app.create_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">create_jobs</span><span class="p">():</span>
@@ -156,6 +172,7 @@
         <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">pwd</span><span class="p">,</span> <span class="n">audio_sample</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="nb">id</span><span class="p">))</span>
         <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">updated_workers</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="delete_jobs"><a class="viewcode-back" href="../app.html#app.delete_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/&lt;int:id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">delete_jobs</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="p">:</span>

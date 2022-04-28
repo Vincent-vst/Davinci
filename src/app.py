@@ -4,7 +4,7 @@ import json
 import sqlite3
 
 #TODO : redirect output of spkinx make html > in something like src/templates 
-app = Flask(__name__, static_url_path='/', static_folder='../docs/_build/html/')
+app = Flask(__name__, static_folder='./templates/html')
 
 def db_connection():
     """Test connection with sqlite database 
@@ -25,19 +25,9 @@ def index() :
     return: homepage 
     rtype: html 
     """
-    return "<h3>404</h3><br><a href=#>link for documentation</a>"
+    return "<h3>TAP web API</h3><br><a href='/api/docs/about.html'>documentation</a>"
 
-# @app.route("/api/documentation")
-# def documentation():
-#     """Documentation page made with spinx.
-#     return: documentation page  
-#     rtype: html 
-#     """
-#     # return render_template("documentation.html")
-#     # return render_template("index.html") 
-#     return app.send_static_file("index.html")
 
-# @app.route('/api/docs', defaults = {'filename': 'module.html'})
 @app.route('/api/docs/<path:filename>')
 def documentation(filename):
     """Documentation page made with spinx.
