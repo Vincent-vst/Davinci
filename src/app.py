@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify, abort, render_template
+from flask import Flask, request, jsonify, abort
+#TODO : delete import json 
 import json
 import sqlite3
 
-app = Flask(__name__)
+#TODO : redirect output of spkinx make html > in something like src/templates 
+app = Flask(__name__, static_url_path='/', static_folder='../docs/_build/html/')
 
 def db_connection():
     """Test connection with sqlite database 
@@ -23,16 +25,28 @@ def index() :
     return: homepage 
     rtype: html 
     """
-    return render_template("index.html")
+    return "<h3>404</h3><br><a href=#>link for documentation</a>"
 
-@app.route("/documentation")
-def documentation():
+# @app.route("/api/documentation")
+# def documentation():
+#     """Documentation page made with spinx.
+#     return: documentation page  
+#     rtype: html 
+#     """
+#     # return render_template("documentation.html")
+#     # return render_template("index.html") 
+#     return app.send_static_file("index.html")
+
+# @app.route('/api/docs', defaults = {'filename': 'module.html'})
+@app.route('/api/docs/<path:filename>')
+def documentation(filename):
     """Documentation page made with spinx.
     return: documentation page  
     rtype: html 
     """
-    # return render_template("documentation.html")
-    return render_template("documentation.html") 
+    return app.send_static_file(filename)
+
+
 
 @app.route("/api", methods=["GET"])
 def query_jobs():
@@ -52,6 +66,7 @@ def query_jobs():
         ]
         if workers is not None:
             return jsonify(workers)
+
 
 @app.route("/api", methods=["POST"])
 def create_jobs():
@@ -123,6 +138,7 @@ def update_jobs(id):
         conn.execute(sql, (user, task, pwd, audio_sample, priority, eta, status, id))
         conn.commit()
         return jsonify(updated_workers)
+
 
 @app.route("/api/<int:id>", methods=["DELETE"])
 def delete_jobs(id) :
