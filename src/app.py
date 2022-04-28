@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 def db_connection():
     """Test connection with sqlite database 
-    raise : error connection 
-    return : connection to database 
-    rtype : sqlite3.Connection
+    raise: error connection 
+    return: connection to database 
+    rtype: sqlite3.Connection
     """
     conn = None
     try:
@@ -20,16 +20,16 @@ def db_connection():
 @app.route("/") 
 def index() :
     """Index page for the API
-    return : homepage 
-    rtype : html 
+    return: homepage 
+    rtype: html 
     """
     return render_template("index.html")
 
 @app.route("/documentation")
 def documentation():
     """Documentation page made with spinx.
-    return : documentation page  
-    rtype : html 
+    return: documentation page  
+    rtype: html 
     """
     return render_template("documentation.html")
 
@@ -37,8 +37,8 @@ def documentation():
 def query_jobs():
     """GET method when no arguments are provided. This method return 
     the content of the database.   
-    return :  database 
-    rtype : json 
+    return: database 
+    rtype: json 
     """
     conn = db_connection()
     cursor = conn.cursor()
@@ -56,10 +56,10 @@ def query_jobs():
 def create_jobs():
     """POST method when no arguments are provided in the URL. This method 
     is used to insert jobs in the database. 
-    raise : error if "priority" is not an integer or not between 0 and 2. 
+    raise: error if "priority" is not an integer or not between 0 and 2. 
     task and status are also raising error if they are not respectivly in [TRAP, IL, TAP] and [success, pending, failure, retry, abort]
-    return : https response code 
-    rtype : str, int 
+    return: https response code 
+    rtype: str, int 
     """
     conn = db_connection()
     cursor = conn.cursor()
@@ -90,10 +90,12 @@ def create_jobs():
 
 @app.route("/api/<int:id>", methods=["PUT"])
 def update_jobs(id):
-    """ PUT method when id is provided in the URL. 
+    """PUT method when id is provided in the URL. 
     This method is mainly use to update a row in the database. 
-    return : https response code  
-    rtype : str, int  
+    param: URL id 
+    type: int 
+    return: https response code  
+    rtype: str, int  
     """
     conn = db_connection()
 
@@ -124,6 +126,8 @@ def update_jobs(id):
 @app.route("/api/<int:id>", methods=["DELETE"])
 def delete_jobs(id) :
     """DELETE method for the API. It's mainly used to delete a row in the database. 
+    param: URL id 
+    type: int 
     return : https response code 
     rtype : str, int 
     """
