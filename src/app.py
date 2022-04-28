@@ -19,17 +19,26 @@ def db_connection():
 
 @app.route("/") 
 def index() :
+    """Index page for the API
+    return : homepage 
+    rtype : html 
+    """
     return render_template("index.html")
 
 @app.route("/documentation")
 def documentation():
+    """Documentation page made with spinx.
+    return : documentation page  
+    rtype : html 
+    """
     return render_template("documentation.html")
 
 @app.route("/api", methods=["GET"])
 def query_jobs():
-    """GET/POST method when no arguments are provided  
-    return : error code & message 
-    rtype : int, str
+    """GET method when no arguments are provided. This method return 
+    the content of the database.   
+    return :  database 
+    rtype : json 
     """
     conn = db_connection()
     cursor = conn.cursor()
@@ -45,6 +54,13 @@ def query_jobs():
 
 @app.route("/api", methods=["POST"])
 def create_jobs():
+    """POST method when no arguments are provided in the URL. This method 
+    is used to insert jobs in the database. 
+    raise : error if "priority" is not an integer or not between 0 and 2. 
+    task and status are also raising error if they are not respectivly in [TRAP, IL, TAP] and [success, pending, failure, retry, abort]
+    return : https response code 
+    rtype : str, int 
+    """
     conn = db_connection()
     cursor = conn.cursor()
     if request.method == "POST":
@@ -74,9 +90,10 @@ def create_jobs():
 
 @app.route("/api/<int:id>", methods=["PUT"])
 def update_jobs(id):
-    """ PUT/DELETE method when id is provided  
-    return : error code & message
-    rtype : int, str
+    """ PUT method when id is provided in the URL. 
+    This method is mainly use to update a row in the database. 
+    return : https response code  
+    rtype : str, int  
     """
     conn = db_connection()
 
@@ -106,6 +123,10 @@ def update_jobs(id):
 
 @app.route("/api/<int:id>", methods=["DELETE"])
 def delete_jobs(id) :
+    """DELETE method for the API. It's mainly used to delete a row in the database. 
+    return : https response code 
+    rtype : str, int 
+    """
     conn = db_connection()
     if request.method == "DELETE":
         sql = """ DELETE FROM tapjoblist WHERE id=? """
