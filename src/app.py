@@ -31,7 +31,8 @@ def documentation():
     return: documentation page  
     rtype: html 
     """
-    return render_template("documentation.html")
+    # return render_template("documentation.html")
+    return render_template("documentation.html") 
 
 @app.route("/api", methods=["GET"])
 def query_jobs():

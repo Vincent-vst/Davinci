@@ -1,10 +1,22 @@
 <html>
     <head>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
         <title>Davinci API</title>
     </head>
-    <body>
-        <h1>API</h1>
-        <a href="documentation">Documentation</a>
+    <body> 
+        <div id="header">
+            <h3>tap web API</h3>
+            <div class="header-icons">
+                <p>lorem ipsum</p>
+            </div>
+        </div>
+        <div id="main-panel">
+            <h1>TAP WEB API</h1>
+            <p>a flask api for automatic speech transcription</p>
+            <a href="documentation">Documentation</a>
+        </div>
+        <div id="footer">
+            <p>release : 1.5</p>
+        </div>
     </body>
 </html>
