@@ -57,18 +57,7 @@ update(){
 	curl -X PUT -F 'user='"$user"'' -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'occ_id='"$occ_id"''   -F 'audio_sample='"$audio_sample"'' -F 'priority='"$priority"'' -F 'eta='"$eta"'' -F 'status='"$status"'' http://$host:$port/api/$id_request
 	
 
-	# echo -n 'id : '
-	# read id_request
-	# echo -n 'task : '
-	# read task
-	# echo -n 'pwd : '
-	# read path
-	# echo -n 'status : '
-	# read status 
-	# echo -n 'audio_sample : '
-	# read audio_sample
-	# curl -X PUT -F 'task='"$task"'' -F 'pwd='"$path"'' -F 'status='"$status"'' -F 'audio_sample='"$audio_sample"'' http://$host:$port/workers/$id_request
-	
+
 }
 
 main(){

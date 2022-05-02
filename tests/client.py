@@ -1,6 +1,7 @@
 import requests 
 
-url = 'http://10.16.0.250:3001/api'
+# url = 'http://10.16.0.250:3002/api'
+url = 'http://127.0.0.1:3001/api'
 
 
 """
@@ -49,9 +50,16 @@ return : None
 #         case "delete" : 
 #             id_row = input("which line do you want to delete ? ")
 #             print(delete(id_row).text)
-data={'user':'tom', 'task':'trap', 'pwd':'/usr', 'audio_sample':'{"name": "tom"}', 'priority' : 2, 'eta':'timedate()', 'status':'pending'}
-print(insert(data)) 
+# data={'user':'tom', 'task':'trap', 'pwd':'/usr',  'occ_id':'bea2022', 'audio_sample':'{"name": "tom"}', 'priority' : 2, 'eta':'timedate()', 'status':'pending'}
+# print(insert(data)) 
 # print(delete(13))
 
 # if __name__ == '__main__' : 
 #     main()
+
+
+# user_update={'user':'test'}
+print(requests.put('http://127.0.0.1:3001/api/1' , data={"user":"test"}))
+
+
+

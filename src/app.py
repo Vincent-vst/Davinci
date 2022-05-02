@@ -56,6 +56,7 @@ def query_jobs():
         ]
         if workers is not None:
             return jsonify(workers)
+        #TODO : where is else ? 
 
 
 @app.route("/api", methods=["POST"])
@@ -105,18 +106,50 @@ def update_jobs(id):
     rtype: str, int  
     """
     conn = db_connection()
+    cursor = conn.cursor()
+
+    def check_in_request(form_var) : 
+        if form_var in request.form :
+            form_var = request.form[form_var]
+        else : 
+            cursor = conn.execute(f"select {form_var} from tapjoblist where id={id}")
+            for row in cursor.fetchall() : 
+                form_var = row[0]
+        return form_var
+
 
     if request.method == "PUT":
-        sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
-        user = request.form["user"]
-        task = request.form["task"]
-        pwd = request.form["pwd"]
-        occ_id = request.form["occ_id"]
-        audio_sample = request.form["audio_sample"]
-        priority = request.form["priority"]
-        eta = request.form["eta"]
-        status = request.form["status"]
-        #TODO : handle errors when priority != int && task | status not in [.. .. ..] 
+
+        # if "task" in request.form : 
+        #     task = request.form["task"]
+        # else : 
+        #     cursor = conn.execute(f"select task from tapjoblist where id={id}")
+        #     for row in cursor.fetchall() : 
+        #         task = row[0]
+        # if "user" in request.form : 
+        #     user = request.form["user"]
+        # else : 
+        #     user = " "
+
+        task = check_in_request("task")
+        user = check_in_request("user")
+        pwd = check_in_request("pwd")
+        occ_id = check_in_request("occ_id") 
+        audio_sample = check_in_request("audio_sample") 
+        priority = check_in_request("priority") 
+        eta = check_in_request("eta")
+        status = check_in_request("status") 
+        # task = request.form["task"]
+        # user = request.form["user"]
+        # pwd = request.form["pwd"]
+        # occ_id = request.form["occ_id"]
+        # audio_sample = request.form["audio_sample"]
+        # priority = request.form["priority"]
+        # eta = request.form["eta"]
+        # status = request.form["status"]
+
+        # print (user, task, pwd, occ_id, audio_sample, priority, eta, status)
+        ##TODO : handle errors when priority != int && task | status not in [.. .. ..] 
         updated_workers = {
             "id": id,
             "user" : user, 
@@ -128,9 +161,13 @@ def update_jobs(id):
             "eta" : eta, 
             "status": status,
         }
+
+        sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
         conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, id))
         conn.commit()
+        #TODO :  put some try/catch here before returning 
         return jsonify(updated_workers)
+        # return user
 
 
 @app.route("/api/<int:id>", methods=["DELETE"])
