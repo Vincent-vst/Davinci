@@ -1,6 +1,4 @@
 from flask import Flask, request, jsonify, abort
-#TODO : delete import json 
-import json
 import sqlite3
 
 app = Flask(__name__, static_folder='./templates/html')
@@ -17,6 +15,18 @@ def db_connection():
     except sqlite3.error as e:
         print(e)
     return conn
+
+# TODO : might be a good idea to put all those methods in an external file 
+def raise_if_no_compliant(priority, task, status) :
+    try :
+        if not (0 <= int(priority) <= 2) : 
+            abort(400, "priority is not in range [0,2]")
+    except ValueError : 
+        abort(400, "priority is not an integer")
+    if task.upper() not in ["TRAP", "IL", "TAP"] : 
+        abort(400, "task is not in [TRAP, IL, TAP]")
+    if status.lower() not in ["success", "pending", "failure", "retry", "abort"] :
+        abort(400, "status not in [success, pending, failure, retry, abort]")
 
 
 @app.route("/") 
@@ -45,18 +55,19 @@ def query_jobs():
     return: database 
     rtype: json 
     """
+
     conn = db_connection()
     cursor = conn.cursor()
 
-    if request.method == "GET":
-        cursor = conn.execute("SELECT * FROM tapjoblist")
-        workers = [
-            dict(id=row[0], user=row[1], task=row[2], pwd=row[3], occ_id=row[4], audio_sample=row[5], priority=row[6], eta=row[7], status=row[8])
-            for row in cursor.fetchall()
-        ]
-        if workers is not None:
-            return jsonify(workers)
-        #TODO : where is else ? 
+    cursor = conn.execute("SELECT * FROM tapjoblist")
+    workers = [
+        dict(id=row[0], user=row[1], task=row[2], pwd=row[3], occ_id=row[4], audio_sample=row[5], priority=row[6], eta=row[7], status=row[8])
+        for row in cursor.fetchall()
+    ]
+    if workers is not None:
+        return jsonify(workers)
+    else : 
+        return "database is empty"
 
 
 @app.route("/api", methods=["POST"])
@@ -68,32 +79,17 @@ def create_jobs():
     return: https response code 
     rtype: str, int 
     """
+
     conn = db_connection()
     cursor = conn.cursor()
-    if request.method == "POST":
-        # TODO : might be a good idea to rename all the "new_smthing" into "smthing"
-        new_user = request.form["user"]
-        new_task = request.form["task"]
-        new_pwd = request.form["pwd"]
-        new_occ_id = request.form["occ_id"]
-        new_audio_sample = request.form["audio_sample"]
-        new_priority = request.form["priority"]
-        new_eta = request.form["eta"]
-        new_status = request.form["status"]
-        # TODO : might be a good idea to put those test in an external method
-        try :
-            if not (0 <= int(new_priority) <= 2) : 
-                abort(400, "priority is not in range [0,2]")
-        except ValueError : 
-            abort(400, "priority is not an integer")
-        if new_task.upper() not in ["TRAP", "IL", "TAP"] : 
-            abort(400, "task is not in [TRAP, IL, TAP]")
-        if new_status.lower() not in ["success", "pending", "failure", "retry", "abort"] :
-            abort(400, "status not in [success, pending, failure, retry, abort]")
-        sql = """INSERT INTO tapjoblist (user, task, pwd, occ_id, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
-        cursor = cursor.execute(sql, (new_user, new_task, new_pwd, new_occ_id, new_audio_sample, new_priority, new_eta, new_status))
-        conn.commit()
-        return f"worker created successfully", 201
+
+    user, task, pwd, occ_id, audio_sample, priority, eta, status = (request.form[s] for s in ('user', 'task', 'pwd', 'occ_id', 'audio_sample', 'priority', 'eta', 'status'))
+    raise_if_no_compliant(priority, task, status)
+    sql = """INSERT INTO tapjoblist (user, task, pwd, occ_id, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
+    cursor = cursor.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status))
+    conn.commit()
+
+    return f"worker created successfully", 201
 
 
 
@@ -119,34 +115,22 @@ def update_jobs(id):
         return form_var
 
 
-    if request.method == "PUT":
-        task = check_in_request("task")
-        user = check_in_request("user")
-        pwd = check_in_request("pwd")
-        occ_id = check_in_request("occ_id") 
-        audio_sample = check_in_request("audio_sample") 
-        priority = check_in_request("priority") 
-        eta = check_in_request("eta")
-        status = check_in_request("status") 
+    task = check_in_request("task")
+    user = check_in_request("user")
+    pwd = check_in_request("pwd")
+    occ_id = check_in_request("occ_id") 
+    audio_sample = check_in_request("audio_sample") 
+    priority = check_in_request("priority") 
+    eta = check_in_request("eta")
+    status = check_in_request("status") 
 
-        ##TODO : handle errors when priority != int && task | status not in [.. .. ..] 
-        updated_workers = {
-            "id": id,
-            "user" : user, 
-            "task": task,
-            "pwd": pwd,
-            "occ_id": occ_id, 
-            "audio_sample": audio_sample,
-            "priority" : priority, 
-            "eta" : eta, 
-            "status": status,
-        }
+    raise_if_no_compliant(priority, task, status)
+    updated_workers = {"id": id,"user" : user, "task": task,"pwd": pwd,"occ_id": occ_id, "audio_sample": audio_sample,"priority" : priority, "eta" : eta, "status": status}
+    sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
+    conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, id))
+    conn.commit()
 
-        sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
-        conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, id))
-        conn.commit()
-        #TODO :  put some try/catch here before returning 
-        return jsonify(updated_workers)
+    return jsonify(updated_workers)
 
 
 @app.route("/api/<int:id>", methods=["DELETE"])
@@ -157,12 +141,13 @@ def delete_jobs(id) :
     return : https response code 
     rtype : str, int 
     """
+
     conn = db_connection()
-    if request.method == "DELETE":
-        sql = """ DELETE FROM tapjoblist WHERE id=? """
-        conn.execute(sql, (id,))
-        conn.commit()
-        return "The worker with id: {} has been deleted.".format(id), 200
+    sql = """ DELETE FROM tapjoblist WHERE id=? """
+    conn.execute(sql, (id,))
+    conn.commit()
+
+    return "The worker with id: {} has been deleted.".format(id), 200
 
 
 if __name__ == "__main__":
