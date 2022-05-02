@@ -40,8 +40,8 @@ python3 tests/client.py
 	<summary>TODO</summary>
 	<!-- <br> -->
     - [ ] Link to DNS    <br>
-    - [ ] Handle 400 | 403 | 500 | 404 errors    <br>
-    - [ ] Securing the API    <br>
+    - [x] Handle 400 | 403 | 500 | 404 errors    <br>
+    - [x] Securing the API    <br>
     - [x] Fix curl -X POST   <br>
 </details>
 
