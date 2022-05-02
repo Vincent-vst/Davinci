@@ -71,6 +71,7 @@ def create_jobs():
     conn = db_connection()
     cursor = conn.cursor()
     if request.method == "POST":
+        # TODO : might be a good idea to rename all the "new_smthing" into "smthing"
         new_user = request.form["user"]
         new_task = request.form["task"]
         new_pwd = request.form["pwd"]
@@ -106,9 +107,9 @@ def update_jobs(id):
     rtype: str, int  
     """
     conn = db_connection()
-    cursor = conn.cursor()
 
     def check_in_request(form_var) : 
+        cursor = conn.cursor()
         if form_var in request.form :
             form_var = request.form[form_var]
         else : 
@@ -119,18 +120,6 @@ def update_jobs(id):
 
 
     if request.method == "PUT":
-
-        # if "task" in request.form : 
-        #     task = request.form["task"]
-        # else : 
-        #     cursor = conn.execute(f"select task from tapjoblist where id={id}")
-        #     for row in cursor.fetchall() : 
-        #         task = row[0]
-        # if "user" in request.form : 
-        #     user = request.form["user"]
-        # else : 
-        #     user = " "
-
         task = check_in_request("task")
         user = check_in_request("user")
         pwd = check_in_request("pwd")
@@ -139,16 +128,7 @@ def update_jobs(id):
         priority = check_in_request("priority") 
         eta = check_in_request("eta")
         status = check_in_request("status") 
-        # task = request.form["task"]
-        # user = request.form["user"]
-        # pwd = request.form["pwd"]
-        # occ_id = request.form["occ_id"]
-        # audio_sample = request.form["audio_sample"]
-        # priority = request.form["priority"]
-        # eta = request.form["eta"]
-        # status = request.form["status"]
 
-        # print (user, task, pwd, occ_id, audio_sample, priority, eta, status)
         ##TODO : handle errors when priority != int && task | status not in [.. .. ..] 
         updated_workers = {
             "id": id,
@@ -167,7 +147,6 @@ def update_jobs(id):
         conn.commit()
         #TODO :  put some try/catch here before returning 
         return jsonify(updated_workers)
-        # return user
 
 
 @app.route("/api/<int:id>", methods=["DELETE"])
