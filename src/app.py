@@ -43,6 +43,7 @@ def index() :
     return "<h3>TAP web API</h3><br><a href='/api/docs/about.html'>documentation</a>"
 
 
+#TODO : add default route 'index.html'
 @app.route('/api/docs/<path:filename>')
 def documentation(filename):
     """Documentation page made with spinx.
@@ -66,7 +67,7 @@ def query_jobs():
 
     cursor = conn.execute("SELECT * FROM tapjoblist")
     workers = [
-        dict(id=row[0], user=row[1], task=row[2], pwd=row[3], occ_id=row[4], audio_sample=row[5], priority=row[6], eta=row[7], status=row[8])
+        dict(id=row[0], user=row[1], task=row[2], pwd=row[3], occ_id=row[4], audio_sample=row[5], priority=row[6], eta=row[7], status=row[8], log=row[9])
         for row in cursor.fetchall()
     ]
     if workers is not None:
@@ -88,10 +89,10 @@ def create_jobs():
     conn = db_connection()
     cursor = conn.cursor()
 
-    user, task, pwd, occ_id, audio_sample, priority, eta, status = (request.form[s] for s in ('user', 'task', 'pwd', 'occ_id', 'audio_sample', 'priority', 'eta', 'status'))
+    user, task, pwd, occ_id, audio_sample, priority, eta, status, log = (request.form[s] for s in ('user', 'task', 'pwd', 'occ_id', 'audio_sample', 'priority', 'eta', 'status', 'log'))
     raise_if_no_compliant(priority, task, audio_sample, status)
-    sql = """INSERT INTO tapjoblist (user, task, pwd, occ_id, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
-    cursor = cursor.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status))
+    sql = """INSERT INTO tapjoblist (user, task, pwd, occ_id, audio_sample, priority, eta, status, log) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+    cursor = cursor.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, log))
     conn.commit()
 
     return f"worker created successfully", 201
@@ -128,11 +129,12 @@ def update_jobs(id):
     priority = check_in_request("priority") 
     eta = check_in_request("eta")
     status = check_in_request("status") 
+    log = check_in_request("log")
 
     raise_if_no_compliant(priority, task,audio_sample, status)
-    updated_workers = {"id": id,"user" : user, "task": task,"pwd": pwd,"occ_id": occ_id, "audio_sample": audio_sample,"priority" : priority, "eta" : eta, "status": status}
-    sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
-    conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, id))
+    updated_workers = {"id": id,"user" : user, "task": task,"pwd": pwd,"occ_id": occ_id, "audio_sample": audio_sample,"priority" : priority, "eta" : eta, "status": status, "log" : log}
+    sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=?, log=? WHERE id=? """
+    conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, log, id))
     conn.commit()
 
     return jsonify(updated_workers)

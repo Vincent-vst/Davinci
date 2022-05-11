@@ -12,7 +12,8 @@ sql_query = """ create table tapjoblist (
     audio_sample json, 
     priority integer, 
     eta time,
-    status text not null
+    status text not null, 
+    log text not null
 )
 
 """
