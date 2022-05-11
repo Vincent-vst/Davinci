@@ -43,6 +43,9 @@ python3 tests/client.py
     - [x] Handle 400 | 403 | 500 | 404 errors    <br>
     - [x] Securing the API    <br>
     - [x] Fix curl -X POST   <br>
+		- [ ] check type() of request.post 
+		- [ ] add "log" column in database 
+		- [ ] send email when status="success"
 </details>
 
 ## 📕 Diagram    

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, abort
 import sqlite3
+import json 
 
 app = Flask(__name__, static_folder='./templates/html')
 
@@ -17,7 +18,7 @@ def db_connection():
     return conn
 
 # TODO : might be a good idea to put all those methods in an external file 
-def raise_if_no_compliant(priority, task, status) :
+def raise_if_no_compliant(priority, task, audio_sample, status) :
     try :
         if not (0 <= int(priority) <= 2) : 
             abort(400, "priority is not in range [0,2]")
@@ -25,6 +26,10 @@ def raise_if_no_compliant(priority, task, status) :
         abort(400, "priority is not an integer")
     if task.upper() not in ["TRAP", "IL", "TAP"] : 
         abort(400, "task is not in [TRAP, IL, TAP]")
+    try : 
+        json.loads(audio_sample)
+    except : 
+        abort(400, "audio_sample is not a json")
     if status.lower() not in ["success", "pending", "failure", "retry", "abort"] :
         abort(400, "status not in [success, pending, failure, retry, abort]")
 
@@ -84,7 +89,7 @@ def create_jobs():
     cursor = conn.cursor()
 
     user, task, pwd, occ_id, audio_sample, priority, eta, status = (request.form[s] for s in ('user', 'task', 'pwd', 'occ_id', 'audio_sample', 'priority', 'eta', 'status'))
-    raise_if_no_compliant(priority, task, status)
+    raise_if_no_compliant(priority, task, audio_sample, status)
     sql = """INSERT INTO tapjoblist (user, task, pwd, occ_id, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
     cursor = cursor.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status))
     conn.commit()
@@ -124,7 +129,7 @@ def update_jobs(id):
     eta = check_in_request("eta")
     status = check_in_request("status") 
 
-    raise_if_no_compliant(priority, task, status)
+    raise_if_no_compliant(priority, task,audio_sample, status)
     updated_workers = {"id": id,"user" : user, "task": task,"pwd": pwd,"occ_id": occ_id, "audio_sample": audio_sample,"priority" : priority, "eta" : eta, "status": status}
     sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? """
     conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, id))
@@ -151,4 +156,4 @@ def delete_jobs(id) :
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3001)
+    app.run(debug=True, port=3000)
