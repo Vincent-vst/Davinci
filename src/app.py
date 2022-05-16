@@ -1,23 +1,40 @@
 from flask import Flask, request, jsonify, abort
 import sqlite3
 import json 
+import os 
 
 app = Flask(__name__, static_folder='./templates/html')
 
-def db_connection():
+def db_connection(database):
     """Test connection with sqlite database 
     raise: error connection 
     return: connection to database 
     rtype: sqlite3.Connection
     """
+    if not os.path.exists(database) : 
+        conn = sqlite3.connect(database)
+        cursor = conn.cursor()
+        sql_query = """ create table tapjoblist (
+            id integer primary key autoincrement,
+            user text,
+            task text not null, 
+            pwd text not null, 
+            occ_id text not null,
+            audio_sample json, 
+            priority integer, 
+            eta time,
+            status text not null, 
+            log text not null
+        )
+        """
+        cursor.execute(sql_query) 
     conn = None
     try:
-        conn = sqlite3.connect("tapwebapi.db")
+        conn = sqlite3.connect(database)
     except sqlite3.error as e:
         print(e)
     return conn
 
-# TODO : might be a good idea to put all those methods in an external file 
 def raise_if_no_compliant(priority, task, audio_sample, status) :
     try :
         if not (0 <= int(priority) <= 2) : 
@@ -34,24 +51,14 @@ def raise_if_no_compliant(priority, task, audio_sample, status) :
         abort(400, "status not in [success, pending, failure, retry, abort]")
 
 
-@app.route("/") 
-def index() :
+@app.route('/', defaults={'filename': 'index.html'})
+@app.route("/<path:filename>") 
+def index(filename) :
     """Index page for the API
     return: homepage 
     rtype: html 
     """
-    return "<h3>TAP web API</h3><br><a href='/api/docs/about.html'>documentation</a>"
-
-
-#TODO : add default route 'index.html'
-@app.route('/api/docs/<path:filename>')
-def documentation(filename):
-    """Documentation page made with spinx.
-    return: documentation page  
-    rtype: html 
-    """
-    return app.send_static_file(filename)
-
+    return app.send_static_file(filename) 
 
 
 @app.route("/api", methods=["GET"])
@@ -62,7 +69,7 @@ def query_jobs():
     rtype: json 
     """
 
-    conn = db_connection()
+    conn = db_connection("tapwebapi.db")
     cursor = conn.cursor()
 
     cursor = conn.execute("SELECT * FROM tapjoblist")
@@ -86,7 +93,7 @@ def create_jobs():
     rtype: str, int 
     """
 
-    conn = db_connection()
+    conn = db_connection("tapwebapi.db")
     cursor = conn.cursor()
 
     user, task, pwd, occ_id, audio_sample, priority, eta, status, log = (request.form[s] for s in ('user', 'task', 'pwd', 'occ_id', 'audio_sample', 'priority', 'eta', 'status', 'log'))
@@ -99,8 +106,8 @@ def create_jobs():
 
 
 
-@app.route("/api/<int:id>", methods=["PUT"])
-def update_jobs(id):
+@app.route("/api/<int:job_id>", methods=["PUT"])
+def update_jobs(job_id):
     """PUT method when id is provided in the URL. 
     This method is mainly use to update a row in the database. 
     param: URL id 
@@ -108,19 +115,19 @@ def update_jobs(id):
     return: https response code  
     rtype: str, int  
     """
-    conn = db_connection()
+    conn = db_connection("tapwebapi.db")
 
     def check_in_request(form_var) : 
         cursor = conn.cursor()
         if form_var in request.form :
             form_var = request.form[form_var]
         else : 
-            cursor = conn.execute(f"select {form_var} from tapjoblist where id={id}")
+            cursor = conn.execute(f"select {form_var} from tapjoblist where id={job_id}")
             for row in cursor.fetchall() : 
                 form_var = row[0]
         return form_var
 
-
+    #hmmmmm
     task = check_in_request("task")
     user = check_in_request("user")
     pwd = check_in_request("pwd")
@@ -132,16 +139,16 @@ def update_jobs(id):
     log = check_in_request("log")
 
     raise_if_no_compliant(priority, task,audio_sample, status)
-    updated_workers = {"id": id,"user" : user, "task": task,"pwd": pwd,"occ_id": occ_id, "audio_sample": audio_sample,"priority" : priority, "eta" : eta, "status": status, "log" : log}
+    updated_workers = {"id": job_id,"user" : user, "task": task,"pwd": pwd,"occ_id": occ_id, "audio_sample": audio_sample,"priority" : priority, "eta" : eta, "status": status, "log" : log}
     sql = """UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=?, log=? WHERE id=? """
-    conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, log, id))
+    conn.execute(sql, (user, task, pwd, occ_id, audio_sample, priority, eta, status, log, job_id))
     conn.commit()
 
     return jsonify(updated_workers)
 
 
-@app.route("/api/<int:id>", methods=["DELETE"])
-def delete_jobs(id) :
+@app.route("/api/<int:job_id>", methods=["DELETE"])
+def delete_jobs(job_id) :
     """DELETE method for the API. It's mainly used to delete a row in the database. 
     param: URL id 
     type: int 
@@ -149,12 +156,12 @@ def delete_jobs(id) :
     rtype : str, int 
     """
 
-    conn = db_connection()
+    conn = db_connection("tapwebapi.db")
     sql = """ DELETE FROM tapjoblist WHERE id=? """
-    conn.execute(sql, (id,))
+    conn.execute(sql, (job_id,))
     conn.commit()
 
-    return "The worker with id: {} has been deleted.".format(id), 200
+    return "The worker with id: {} has been deleted.".format(job_id), 200
 
 
 if __name__ == "__main__":
