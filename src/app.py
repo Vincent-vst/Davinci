@@ -1,3 +1,7 @@
+"""
+app.py start an API to populate a database. 
+"""
+
 from flask import Flask, request, jsonify, abort
 import sqlite3
 import json 
@@ -5,6 +9,7 @@ import os
 import argparse
 
 app = Flask(__name__, static_folder='./templates/html')
+#app.config db  
 
 def db_connection(database):
     """Test connection with sqlite database 
