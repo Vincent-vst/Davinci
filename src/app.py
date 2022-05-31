@@ -9,7 +9,6 @@ import os
 import argparse
 
 app = Flask(__name__, static_folder='./templates/html')
-#app.config db  
 
 def db_connection(database):
     """Test connection with sqlite database 
@@ -75,7 +74,7 @@ def query_jobs():
     rtype: json 
     """
 
-    conn = db_connection("tapwebapi.db")
+    conn = db_connection(args.db)
     cursor = conn.cursor()
 
     cursor = conn.execute("SELECT * FROM tapjoblist")
@@ -99,7 +98,7 @@ def create_jobs():
     rtype: str, int 
     """
 
-    conn = db_connection("tapwebapi.db")
+    conn = db_connection(args.db)
     cursor = conn.cursor()
 
     user, task, pwd, occ_id, audio_sample, priority, eta, status, log = (request.form[s] for s in ('user', 'task', 'pwd', 'occ_id', 'audio_sample', 'priority', 'eta', 'status', 'log'))
@@ -121,7 +120,8 @@ def update_jobs(job_id):
     return: https response code  
     rtype: str, int  
     """
-    conn = db_connection("tapwebapi.db")
+
+    conn = db_connection(args.db)
 
     def check_in_request(form_var) : 
         cursor = conn.cursor()
@@ -133,7 +133,7 @@ def update_jobs(job_id):
                 form_var = row[0]
         return form_var
 
-    #hmmmmm
+    # TODO : change to a list 
     task = check_in_request("task")
     user = check_in_request("user")
     pwd = check_in_request("pwd")
@@ -162,7 +162,7 @@ def delete_jobs(job_id) :
     rtype : str, int 
     """
 
-    conn = db_connection("tapwebapi.db")
+    conn = db_connection(args.db)
     sql = """ DELETE FROM tapjoblist WHERE id=? """
     conn.execute(sql, (job_id,))
     conn.commit()
@@ -172,7 +172,7 @@ def delete_jobs(job_id) :
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Rest API')
-    parser.add_argument("--ip", dest="ip", default="127.0.0.1", help="IP address")
+    parser.add_argument("--ip", dest="ip", default="0.0.0.0", help="IP address")
     parser.add_argument("--port", dest="port", default="3000", help="port number")
     parser.add_argument("--db", dest="db", default="tapwebapi.db", help="path to db")
     args = parser.parse_args()
