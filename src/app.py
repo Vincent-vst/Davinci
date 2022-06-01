@@ -173,7 +173,7 @@ def delete_jobs(job_id) :
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Rest API')
     parser.add_argument("--ip", dest="ip", default="0.0.0.0", help="IP address")
-    parser.add_argument("--port", dest="port", default="3000", help="port number")
+    parser.add_argument("--port", dest="port", default="3002", help="port number")
     parser.add_argument("--db", dest="db", default="tapwebapi.db", help="path to db")
     args = parser.parse_args()
     app.run(debug=True, host=args.ip, port=args.port)
