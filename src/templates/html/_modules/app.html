@@ -32,54 +32,72 @@
           <div class="body" role="main">
             
   <h1>Source code for app</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">abort</span>
-<span class="c1">#TODO : delete import json </span>
-<span class="kn">import</span> <span class="nn">json</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">app.py start an API to populate a database. </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">abort</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">json</span> 
+<span class="kn">import</span> <span class="nn">os</span> 
+<span class="kn">import</span> <span class="nn">argparse</span>
 
-<span class="c1">#TODO : redirect output of spkinx make html &gt; in something like src/templates </span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">static_url_path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">static_folder</span><span class="o">=</span><span class="s1">&#39;../docs/_build/html/&#39;</span><span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">static_folder</span><span class="o">=</span><span class="s1">&#39;./templates/html&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="db_connection"><a class="viewcode-back" href="../app.html#app.db_connection">[docs]</a><span class="k">def</span> <span class="nf">db_connection</span><span class="p">():</span>
+<div class="viewcode-block" id="db_connection"><a class="viewcode-back" href="../app.html#app.db_connection">[docs]</a><span class="k">def</span> <span class="nf">db_connection</span><span class="p">(</span><span class="n">database</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Test connection with sqlite database </span>
 <span class="sd">    raise: error connection </span>
 <span class="sd">    return: connection to database </span>
 <span class="sd">    rtype: sqlite3.Connection</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">database</span><span class="p">)</span> <span class="p">:</span> 
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> 
+        <span class="n">sql_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot; create table tapjoblist (</span>
+<span class="s2">            id integer primary key autoincrement,</span>
+<span class="s2">            user text,</span>
+<span class="s2">            task text not null, </span>
+<span class="s2">            pwd text not null, </span>
+<span class="s2">            occ_id text not null,</span>
+<span class="s2">            audio_sample json, </span>
+<span class="s2">            priority integer, </span>
+<span class="s2">            eta time,</span>
+<span class="s2">            status text not null, </span>
+<span class="s2">            log text not null</span>
+<span class="s2">        )</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql_query</span><span class="p">)</span> 
     <span class="n">conn</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;tapwebapi.db&quot;</span><span class="p">)</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">conn</span></div>
 
-<div class="viewcode-block" id="index"><a class="viewcode-back" href="../app.html#app.index">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> 
-<span class="k">def</span> <span class="nf">index</span><span class="p">()</span> <span class="p">:</span>
+<div class="viewcode-block" id="raise_if_no_compliant"><a class="viewcode-back" href="../app.html#app.raise_if_no_compliant">[docs]</a><span class="k">def</span> <span class="nf">raise_if_no_compliant</span><span class="p">(</span><span class="n">priority</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">audio_sample</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="p">:</span>
+    <span class="k">try</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">priority</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">:</span> 
+            <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;priority is not in range [0,2]&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="p">:</span> 
+        <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;priority is not an integer&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;TRAP&quot;</span><span class="p">,</span> <span class="s2">&quot;IL&quot;</span><span class="p">,</span> <span class="s2">&quot;TAP&quot;</span><span class="p">]</span> <span class="p">:</span> 
+        <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;task is not in [TRAP, IL, TAP]&quot;</span><span class="p">)</span>
+    <span class="k">try</span> <span class="p">:</span> 
+        <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">audio_sample</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">:</span> 
+        <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;audio_sample is not a json&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">,</span> <span class="s2">&quot;retry&quot;</span><span class="p">,</span> <span class="s2">&quot;abort&quot;</span><span class="p">]</span> <span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;status not in [success, pending, failure, retry, abort]&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="index"><a class="viewcode-back" href="../app.html#app.index">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="s1">&#39;index.html&#39;</span><span class="p">})</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&lt;path:filename&gt;&quot;</span><span class="p">)</span> 
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Index page for the API</span>
 <span class="sd">    return: homepage </span>
 <span class="sd">    rtype: html </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s2">&quot;&lt;h3&gt;TAP web API&lt;/h3&gt;&lt;br&gt;&lt;a href=&#39;/api/docs/about.html&#39;&gt;documentation&lt;/a&gt;&quot;</span></div>
-
-<span class="c1"># @app.route(&quot;/api/documentation&quot;)</span>
-<span class="c1"># def documentation():</span>
-<span class="c1">#     &quot;&quot;&quot;Documentation page made with spinx.</span>
-<span class="c1">#     return: documentation page  </span>
-<span class="c1">#     rtype: html </span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     # return render_template(&quot;documentation.html&quot;)</span>
-<span class="c1">#     # return render_template(&quot;index.html&quot;) </span>
-<span class="c1">#     return app.send_static_file(&quot;index.html&quot;)</span>
-
-<span class="c1"># @app.route(&#39;/api/docs&#39;, defaults = {&#39;filename&#39;: &#39;module.html&#39;})</span>
-<div class="viewcode-block" id="documentation"><a class="viewcode-back" href="../app.html#app.documentation">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/docs/&lt;path:filename&gt;&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">documentation</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Documentation page made with spinx.</span>
-<span class="sd">    return: documentation page  </span>
-<span class="sd">    rtype: html </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">app</span><span class="o">.</span><span class="n">send_static_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
-
+    <span class="k">return</span> <span class="n">app</span><span class="o">.</span><span class="n">send_static_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> </div>
 
 
 <div class="viewcode-block" id="query_jobs"><a class="viewcode-back" href="../app.html#app.query_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
@@ -89,17 +107,19 @@
 <span class="sd">    return: database </span>
 <span class="sd">    rtype: json </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">()</span>
+
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
     <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM tapjoblist&quot;</span><span class="p">)</span>
-        <span class="n">workers</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">user</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">task</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pwd</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">audio_sample</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">priority</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">eta</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">status</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-        <span class="p">]</span>
-        <span class="k">if</span> <span class="n">workers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">workers</span><span class="p">)</span></div>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM tapjoblist&quot;</span><span class="p">)</span>
+    <span class="n">workers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">user</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">task</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pwd</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">occ_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">audio_sample</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">priority</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">eta</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">status</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">log</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">workers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">workers</span><span class="p">)</span>
+    <span class="k">else</span> <span class="p">:</span> 
+        <span class="k">return</span> <span class="s2">&quot;database is empty&quot;</span></div>
 
 
 <div class="viewcode-block" id="create_jobs"><a class="viewcode-back" href="../app.html#app.create_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
@@ -111,35 +131,22 @@
 <span class="sd">    return: https response code </span>
 <span class="sd">    rtype: str, int </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">()</span>
+
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
     <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
-        <span class="n">new_user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
-        <span class="n">new_task</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span>
-        <span class="n">new_pwd</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;pwd&quot;</span><span class="p">]</span>
-        <span class="n">new_audio_sample</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;audio_sample&quot;</span><span class="p">]</span>
-        <span class="n">new_priority</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;priority&quot;</span><span class="p">]</span>
-        <span class="n">new_eta</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
-        <span class="n">new_status</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>
-        <span class="c1"># TODO : might be a good idea to put those test in an external method</span>
-        <span class="k">try</span> <span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_priority</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">:</span> 
-                <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;priority is not in range [0,2]&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="p">:</span> 
-            <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;priority is not an integer&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">new_task</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;TRAP&quot;</span><span class="p">,</span> <span class="s2">&quot;IL&quot;</span><span class="p">,</span> <span class="s2">&quot;TAP&quot;</span><span class="p">]</span> <span class="p">:</span> 
-            <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;task is not in [TRAP, IL, TAP]&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">new_status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">,</span> <span class="s2">&quot;retry&quot;</span><span class="p">,</span> <span class="s2">&quot;abort&quot;</span><span class="p">]</span> <span class="p">:</span>
-            <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;status not in [success, pending, failure, retry, abort]&quot;</span><span class="p">)</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;INSERT INTO tapjoblist (user, task, pwd, audio_sample, priority, eta, status) VALUES (?, ?, ?, ?, ?, ?, ?)&quot;&quot;&quot;</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="p">(</span><span class="n">new_user</span><span class="p">,</span> <span class="n">new_task</span><span class="p">,</span> <span class="n">new_pwd</span><span class="p">,</span> <span class="n">new_audio_sample</span><span class="p">,</span> <span class="n">new_priority</span><span class="p">,</span> <span class="n">new_eta</span><span class="p">,</span> <span class="n">new_status</span><span class="p">))</span>
-        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;worker created successfully&quot;</span><span class="p">,</span> <span class="mi">201</span></div>
+
+    <span class="n">user</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">pwd</span><span class="p">,</span> <span class="n">occ_id</span><span class="p">,</span> <span class="n">audio_sample</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;task&#39;</span><span class="p">,</span> <span class="s1">&#39;pwd&#39;</span><span class="p">,</span> <span class="s1">&#39;occ_id&#39;</span><span class="p">,</span> <span class="s1">&#39;audio_sample&#39;</span><span class="p">,</span> <span class="s1">&#39;priority&#39;</span><span class="p">,</span> <span class="s1">&#39;eta&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">))</span>
+    <span class="n">raise_if_no_compliant</span><span class="p">(</span><span class="n">priority</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">audio_sample</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;INSERT INTO tapjoblist (user, task, pwd, occ_id, audio_sample, priority, eta, status, log) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;&quot;&quot;</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">pwd</span><span class="p">,</span> <span class="n">occ_id</span><span class="p">,</span> <span class="n">audio_sample</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">log</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;worker created successfully&quot;</span><span class="p">,</span> <span class="mi">201</span></div>
 
 
 
-<div class="viewcode-block" id="update_jobs"><a class="viewcode-back" href="../app.html#app.update_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/&lt;int:id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">update_jobs</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<div class="viewcode-block" id="update_jobs"><a class="viewcode-back" href="../app.html#app.update_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/&lt;int:job_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">update_jobs</span><span class="p">(</span><span class="n">job_id</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;PUT method when id is provided in the URL. </span>
 <span class="sd">    This method is mainly use to update a row in the database. </span>
 <span class="sd">    param: URL id </span>
@@ -147,51 +154,74 @@
 <span class="sd">    return: https response code  </span>
 <span class="sd">    rtype: str, int  </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;PUT&quot;</span><span class="p">:</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;UPDATE tapjoblist SET user=?, task=?, pwd=?, audio_sample=?, priority=?, eta=?, status=? WHERE id=? &quot;&quot;&quot;</span>
-        <span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
-        <span class="n">task</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span>
-        <span class="n">pwd</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;pwd&quot;</span><span class="p">]</span>
-        <span class="n">audio_sample</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;audio_sample&quot;</span><span class="p">]</span>
-        <span class="n">priority</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;priority&quot;</span><span class="p">]</span>
-        <span class="n">eta</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>
-        <span class="c1">#TODO : handle errors when priority != int &amp;&amp; task | status not in [.. .. ..] </span>
-        <span class="n">updated_workers</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
-            <span class="s2">&quot;user&quot;</span> <span class="p">:</span> <span class="n">user</span><span class="p">,</span> 
-            <span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">task</span><span class="p">,</span>
-            <span class="s2">&quot;pwd&quot;</span><span class="p">:</span> <span class="n">pwd</span><span class="p">,</span>
-            <span class="s2">&quot;audio_sample&quot;</span><span class="p">:</span> <span class="n">audio_sample</span><span class="p">,</span>
-            <span class="s2">&quot;priority&quot;</span> <span class="p">:</span> <span class="n">priority</span><span class="p">,</span> 
-            <span class="s2">&quot;eta&quot;</span> <span class="p">:</span> <span class="n">eta</span><span class="p">,</span> 
-            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">pwd</span><span class="p">,</span> <span class="n">audio_sample</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="nb">id</span><span class="p">))</span>
-        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">updated_workers</span><span class="p">)</span></div>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">check_in_request</span><span class="p">(</span><span class="n">form_var</span><span class="p">)</span> <span class="p">:</span> 
+        <span class="sd">&quot;&quot;&quot;Will check if a certain field is in the requests</span>
+<span class="sd">        if it is, it will update it with the new one, </span>
+<span class="sd">        but if not, it will retrieve the previous one</span>
+<span class="sd">        param: form  field </span>
+<span class="sd">        type : str</span>
+<span class="sd">        return : form field</span>
+<span class="sd">        rtype : str </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">form_var</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span> <span class="p">:</span>
+            <span class="n">form_var</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="n">form_var</span><span class="p">]</span>
+        <span class="k">else</span> <span class="p">:</span> 
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;select </span><span class="si">{</span><span class="n">form_var</span><span class="si">}</span><span class="s2"> from tapjoblist where id=</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span> <span class="p">:</span> 
+                <span class="n">form_var</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">form_var</span>
+
+    <span class="c1"># TODO : change to a list </span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;task&quot;</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
+    <span class="n">pwd</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;pwd&quot;</span><span class="p">)</span>
+    <span class="n">occ_id</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;occ_id&quot;</span><span class="p">)</span> 
+    <span class="n">audio_sample</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;audio_sample&quot;</span><span class="p">)</span> 
+    <span class="n">priority</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;priority&quot;</span><span class="p">)</span> 
+    <span class="n">eta</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;eta&quot;</span><span class="p">)</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> 
+    <span class="n">log</span> <span class="o">=</span> <span class="n">check_in_request</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+
+    <span class="n">raise_if_no_compliant</span><span class="p">(</span><span class="n">priority</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span><span class="n">audio_sample</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+    <span class="n">updated_workers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">,</span><span class="s2">&quot;user&quot;</span> <span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">task</span><span class="p">,</span><span class="s2">&quot;pwd&quot;</span><span class="p">:</span> <span class="n">pwd</span><span class="p">,</span><span class="s2">&quot;occ_id&quot;</span><span class="p">:</span> <span class="n">occ_id</span><span class="p">,</span> <span class="s2">&quot;audio_sample&quot;</span><span class="p">:</span> <span class="n">audio_sample</span><span class="p">,</span><span class="s2">&quot;priority&quot;</span> <span class="p">:</span> <span class="n">priority</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span> <span class="p">:</span> <span class="n">eta</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span> <span class="p">:</span> <span class="n">log</span><span class="p">}</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;UPDATE tapjoblist SET user=?, task=?, pwd=?, occ_id=?, audio_sample=?, priority=?, eta=?, status=?, log=? WHERE id=? &quot;&quot;&quot;</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">pwd</span><span class="p">,</span> <span class="n">occ_id</span><span class="p">,</span> <span class="n">audio_sample</span><span class="p">,</span> <span class="n">priority</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">job_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">updated_workers</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="delete_jobs"><a class="viewcode-back" href="../app.html#app.delete_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/&lt;int:id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">delete_jobs</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="p">:</span>
+<div class="viewcode-block" id="delete_jobs"><a class="viewcode-back" href="../app.html#app.delete_jobs">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/&lt;int:job_id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DELETE&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">delete_jobs</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span> <span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;DELETE method for the API. It&#39;s mainly used to delete a row in the database. </span>
 <span class="sd">    param: URL id </span>
 <span class="sd">    type: int </span>
 <span class="sd">    return : https response code </span>
 <span class="sd">    rtype : str, int </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">:</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot; DELETE FROM tapjoblist WHERE id=? &quot;&quot;&quot;</span>
-        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="p">(</span><span class="nb">id</span><span class="p">,))</span>
-        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-        <span class="k">return</span> <span class="s2">&quot;The worker with id: </span><span class="si">{}</span><span class="s2"> has been deleted.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="mi">200</span></div>
+
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">db_connection</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot; DELETE FROM tapjoblist WHERE id=? &quot;&quot;&quot;</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="p">(</span><span class="n">job_id</span><span class="p">,))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="s2">&quot;The worker with id: </span><span class="si">{}</span><span class="s2"> has been deleted.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_id</span><span class="p">),</span> <span class="mi">200</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">3001</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Main function. The arguments parsed are : --ip --port and --db.</span>
+<span class="sd">    by default, IP is 0.0.0.0, port is 3002 and db is tapwebapi.db </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Rest API&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ip&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;ip&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;IP address&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--port&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;port&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;3002&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;port number&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--db&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;db&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;tapwebapi.db&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;path to db&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -210,13 +240,17 @@
 
 
 <h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">about</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Controller:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../information.html">about</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
 </ul>
 
 <div class="relations">

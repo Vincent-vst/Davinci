@@ -3,24 +3,62 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to tap-web-api's documentation!
+
+Tap-web-api Documentation
 =======================================
 
+What is Tap-web-api
+-------------------
+| Tap-web-api is a flask based api for a speech processing tool. 
+| It is Flask>=2.1.1 compatible 
+| The api populate a database which is then read by the controller. 
+
+.. note::
+    You can access the source code via :  ``https://gitlab.bea.lan/pesa/tap/module6-tap_web_api``
+
+Documentation 
+------------------
+
+.. API
+.. ~~~~~
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: API:
 
    about
    installation
-   quickstart
    usage
    modules
 
+.. Controller
+.. ~~~~
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Controller:
+
+   information
+   install
+
+Dependencies and Troubleshooting
+--------------------------------
+
+| The database is located where the script is run. 
+| If you use a service, the database is located in WorkingDirectory
 
 
-Indices and tables
-==================
+| The scripts run on python3.10 
+| make sure the python dependencies are installed  
+``sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools``   
 
-* :ref:`genindex`
+| By default, port 3002 is used, make sure any firewalls aren't blocking it
+
+
+Others
+-------------
+
+.. * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
+* :ref:`search`  
+

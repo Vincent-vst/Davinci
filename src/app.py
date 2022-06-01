@@ -18,7 +18,7 @@ def db_connection(database):
     """
     if not os.path.exists(database) : 
         conn = sqlite3.connect(database)
-        cursor = conn.cursor()
+        cursor = conn.cursor() 
         sql_query = """ create table tapjoblist (
             id integer primary key autoincrement,
             user text,
@@ -124,6 +124,14 @@ def update_jobs(job_id):
     conn = db_connection(args.db)
 
     def check_in_request(form_var) : 
+        """Will check if a certain field is in the requests
+        if it is, it will update it with the new one, 
+        but if not, it will retrieve the previous one
+        param: form  field 
+        type : str
+        return : form field
+        rtype : str 
+        """
         cursor = conn.cursor()
         if form_var in request.form :
             form_var = request.form[form_var]
@@ -171,6 +179,9 @@ def delete_jobs(job_id) :
 
 
 if __name__ == "__main__":
+    """Main function. The arguments parsed are : --ip --port and --db.
+    by default, IP is 0.0.0.0, port is 3002 and db is tapwebapi.db 
+    """
     parser = argparse.ArgumentParser(description='Rest API')
     parser.add_argument("--ip", dest="ip", default="0.0.0.0", help="IP address")
     parser.add_argument("--port", dest="port", default="3002", help="port number")

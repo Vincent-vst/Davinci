@@ -3,6 +3,8 @@
 Davinci is a REST API in python built with FLASK.  
 The server is running with gunicorn.  
 Python version : `Python 3.10.4`   
+The docs can be found on : http://127.0.0.1:3002   
+Or on this repo in ./src/templates/index.html 
 <!-- Branch : security -->
 
 ## 🛠  Built with  

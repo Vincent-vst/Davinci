@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="src" href="modules.html" />
-    <link rel="prev" title="quickstart" href="quickstart.html" />
+    <link rel="prev" title="installation" href="installation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -36,20 +36,40 @@
             
   <section id="usage">
 <h1>usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<section id="in-bash">
-<h2>In bash<a class="headerlink" href="#in-bash" title="Permalink to this headline">¶</a></h2>
-<p><strong>dump the database</strong></p>
-<p>curl <a class="reference external" href="http://$host:$port/api">http://$host:$port/api</a></p>
-<p><strong>insert a row in the database</strong></p>
-<p>curl -X POST -F ‘user=’”$user”’’ -F ‘task=’”$task”’’ -F ‘pwd=’”$path”’’ -F ‘audio_sample=’”$audio_sample”’’ -F ‘priority=’”$priority”’’ -F ‘eta=’”$eta”’’ -F ‘status=’”$status”’’ <a class="reference external" href="http://$host:$port/api">http://$host:$port/api</a></p>
-<p><strong>delete a row in the database</strong></p>
-<p>curl -X DELETE <a class="reference external" href="http://$host:$port/api/$identifiant">http://$host:$port/api/$identifiant</a></p>
-<p><strong>update a row in the database</strong></p>
-<p>curl -X PUT -F ‘user=’”$user”’’ -F ‘task=’”$task”’’ -F ‘pwd=’”$path”’’ -F ‘audio_sample=’”$audio_sample”’’ -F ‘priority=’”$priority”’’ -F ‘eta=’”$eta”’’ -F ‘status=’”$status”’’ <a class="reference external" href="http://$host:$port/api/$id_request">http://$host:$port/api/$id_request</a></p>
+<section id="starting-the-api">
+<h2>Starting the API<a class="headerlink" href="#starting-the-api" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">src/app.py</span></code></p>
 </section>
-<section id="in-python">
-<h2>In python<a class="headerlink" href="#in-python" title="Permalink to this headline">¶</a></h2>
-<p><em>see tests/client.py</em></p>
+<section id="using-the-api">
+<h2>Using the API<a class="headerlink" href="#using-the-api" title="Permalink to this headline">¶</a></h2>
+<p>For the following code, in bash, we will consider $host=127.0.0.1 and $port=32,
+and in python url=127.0.0.1:3002</p>
+<p><strong>dump the database</strong></p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">http://$host:$port/api</span></code></div>
+<div class="line"><em>or in python</em></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">requests.get(url)</span></code></div>
+</div>
+<p><strong>insert a row in the database</strong></p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">-F</span> <span class="pre">'user='&quot;$user&quot;''</span> <span class="pre">-F</span> <span class="pre">'task='&quot;$task&quot;''</span> <span class="pre">-F</span> <span class="pre">'pwd='&quot;$path&quot;''</span> <span class="pre">-F</span> <span class="pre">'audio_sample='&quot;$audio_sample&quot;''</span> <span class="pre">-F</span> <span class="pre">'priority='&quot;$priority&quot;''</span> <span class="pre">-F</span> <span class="pre">'eta='&quot;$eta&quot;''</span> <span class="pre">-F</span> <span class="pre">'status='&quot;$status&quot;''</span> <span class="pre">-F</span> <span class="pre">'log'='&quot;</span> <span class="pre">&quot;''</span> <span class="pre">http://$host:$port/api</span></code></div>
+<div class="line"><em>or in python</em></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">item={'user':'tom',</span> <span class="pre">'task':'trap',</span> <span class="pre">'pwd':'/usr',</span>&#160; <span class="pre">'occ_id':'bea2022',</span> <span class="pre">'audio_sample':'{&quot;name&quot;:</span> <span class="pre">&quot;tom&quot;}',</span> <span class="pre">'priority'</span> <span class="pre">:</span> <span class="pre">2,</span> <span class="pre">'eta':'timedate()',</span> <span class="pre">'status':'pending',</span> <span class="pre">'log':'</span> <span class="pre">'}</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">requests.post(url,</span> <span class="pre">data=item)</span></code></div>
+</div>
+<p><strong>delete a row in the database</strong></p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">DELETE</span> <span class="pre">http://$host:$port/api/$id_row</span></code></div>
+<div class="line"><em>or in python</em></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">requests.delete(url</span> <span class="pre">+</span> <span class="pre">'/'</span> <span class="pre">+</span> <span class="pre">str(id_row))</span></code></div>
+</div>
+<p><strong>update a row in the database</strong></p>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">PUT</span> <span class="pre">-F</span> <span class="pre">'user='&quot;username&quot;''</span> <span class="pre">http://$host:$port/api/$id_request</span></code></div>
+<div class="line"><em>or in python</em></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">user_update={'user':'test'}</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">requests.put('http://127.0.0.1:3001/api/1'</span> <span class="pre">,</span> <span class="pre">data={&quot;user&quot;:&quot;test&quot;})</span></code></div>
+</div>
 </section>
 </section>
 
@@ -70,24 +90,24 @@
 
 
 <h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">about</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">quickstart</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#in-bash">In bash</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#in-python">In python</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">src</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Controller:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="information.html">about</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="quickstart.html" title="previous chapter">quickstart</a></li>
+      <li>Previous: <a href="installation.html" title="previous chapter">installation</a></li>
       <li>Next: <a href="modules.html" title="next chapter">src</a></li>
   </ul></li>
 </ul>

@@ -2,7 +2,7 @@
 Description=web api for a speech processing tool
 After=multi-user.target
 [Service]
-# TODO : Change WorkingDirectory to the one with the database
+# TODO : Change WorkingDirectory to the one with the database and the app.py
 Type=simple
 Restart=always
 # TODO : use venv/bin/python3 instead of /usr/bin/python3 
