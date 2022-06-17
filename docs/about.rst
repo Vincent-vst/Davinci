@@ -2,21 +2,18 @@
 about
 =================
 
-| TAP-web-api is a REST API in python built with FLASK.  
-| The server is running with gunicorn 
-| Python version : Python 3.10.4
-| 
+CPU | GPU ressource manager used by a speech processing tool
+
 
 Purpose 
 #############
 
-| The api is built to work for a speech processing tool. 
-| It reads http requests in order to populate a database (tapjoblist.db) 
+| The controller will read a sqlite database. 
+| It will then select a job following a given strategy (in src/tool/controller.py) and monitor its processing. 
+
 
 Built with 
 ############
 
 * Python
-* Flask
-* SQLite
-* Html/Css
+* SQLite 
