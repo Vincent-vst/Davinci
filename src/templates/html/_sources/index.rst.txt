@@ -48,9 +48,9 @@ Dependencies and Troubleshooting
 | If you use a service, the database is located in WorkingDirectory
 
 
-| The scripts run on python3.10
-| make sure the python dependencies are installed
-``sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools``  
+| The scripts run on python3.10 
+| make sure the python dependencies are installed  
+``sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools``   
 
 | By default, port 3002 is used, make sure any firewalls aren't blocking it
 
